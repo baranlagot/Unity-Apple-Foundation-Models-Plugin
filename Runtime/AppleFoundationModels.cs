@@ -10,7 +10,10 @@ namespace Baran.AppleFoundationModels
     public static class AppleFoundationModels
     {
         private static readonly object Sync = new object();
-        private static IAppleFoundationModelsClient _client = CreateDefaultClient();
+        private static AppleFoundationModelsConfiguration _configuration =
+            AppleFoundationModelsConfiguration.Default;
+        private static IAppleFoundationModelsClient _client = CreateDefaultClient(_configuration);
+        private static bool _usesCustomProvider;
 
         public static bool IsSupportedPlatform
         {
@@ -21,6 +24,17 @@ namespace Baran.AppleFoundationModels
 #else
                 return false;
 #endif
+            }
+        }
+
+        public static AppleFoundationModelsConfiguration Configuration
+        {
+            get
+            {
+                lock (Sync)
+                {
+                    return _configuration;
+                }
             }
         }
 
@@ -72,6 +86,7 @@ namespace Baran.AppleFoundationModels
             lock (Sync)
             {
                 _client = new AppleFoundationModelsClient(provider, new UnityJsonSerializer());
+                _usesCustomProvider = true;
             }
         }
 
@@ -79,7 +94,26 @@ namespace Baran.AppleFoundationModels
         {
             lock (Sync)
             {
-                _client = CreateDefaultClient();
+                _usesCustomProvider = false;
+                _client = CreateDefaultClient(_configuration);
+            }
+        }
+
+        internal static void ApplyConfiguration(
+            AppleFoundationModelsConfiguration configuration)
+        {
+            if (configuration == null)
+            {
+                throw new ArgumentNullException(nameof(configuration));
+            }
+
+            lock (Sync)
+            {
+                _configuration = configuration;
+                if (!_usesCustomProvider)
+                {
+                    _client = CreateDefaultClient(configuration);
+                }
             }
         }
 
@@ -94,10 +128,11 @@ namespace Baran.AppleFoundationModels
             }
         }
 
-        private static IAppleFoundationModelsClient CreateDefaultClient()
+        private static IAppleFoundationModelsClient CreateDefaultClient(
+            AppleFoundationModelsConfiguration configuration)
         {
             return new AppleFoundationModelsClient(
-                DefaultProviderFactory.Create(),
+                DefaultProviderFactory.Create(configuration),
                 new UnityJsonSerializer());
         }
     }
