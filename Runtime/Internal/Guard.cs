@@ -22,11 +22,12 @@ namespace Baran.AppleFoundationModels.Internal
 
         public static void Options(AppleFoundationModelsOptions options)
         {
-            if (options.Temperature.HasValue && options.Temperature.Value < 0f)
+            if (options.Temperature.HasValue &&
+                (options.Temperature.Value < 0f || options.Temperature.Value > 1f))
             {
                 throw new ArgumentOutOfRangeException(
                     nameof(options.Temperature),
-                    "Temperature cannot be negative.");
+                    "Temperature must be between zero and one inclusive.");
             }
 
             if (options.MaxOutputTokens.HasValue && options.MaxOutputTokens.Value <= 0)

@@ -1,3 +1,4 @@
+using Baran.AppleFoundationModels.Native;
 using Baran.AppleFoundationModels.Providers;
 
 namespace Baran.AppleFoundationModels.Internal
@@ -17,6 +18,13 @@ namespace Baran.AppleFoundationModels.Internal
                 configuration.UseMockProviderInEditor,
                 new MockAppleFoundationModelsProvider(),
                 new UnsupportedAppleFoundationModelsProvider());
+#elif UNITY_IOS
+            return new NativeAppleFoundationModelsProvider(
+                new AppleFoundationModelsNativeTransport(),
+                new UnityNativeMessageCodec(),
+                new NativeRequestRegistry(),
+                new SynchronizationContextCallbackSchedulerFactory(),
+                configuration);
 #else
             // Native providers are introduced by the iOS/macOS native vertical slice.
             return new UnsupportedAppleFoundationModelsProvider();
