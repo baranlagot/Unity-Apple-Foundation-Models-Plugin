@@ -8,7 +8,7 @@ Apple Foundation Models for Unity is an experimental, open-source Unity package 
 
 ## Current status
 
-The editor-first managed core is implemented. It includes the public API, deterministic mock provider, custom provider injection, validation, streaming, and JSON parsing. The native iOS and macOS providers are planned and are not yet available in this development snapshot.
+The editor-first managed core is implemented. It includes the public API, deterministic mock provider, custom provider injection, Project Settings, validation, streaming, and JSON parsing. The native iOS and macOS providers are planned and are not yet available in this development snapshot.
 
 ## Requirements and platform support
 
@@ -73,6 +73,10 @@ AppleFoundationModels.SetProvider(myProvider);
 ```
 
 This hook supports deterministic tests and optional local or cloud fallbacks without coupling the core package to any vendor. Review the privacy and cost behavior of any fallback before shipping it.
+
+## Project Settings
+
+Open **Edit > Project Settings > Apple Foundation Models** to configure the Editor mock provider, native debug logging, default native timeout, and fallback policy. Settings are stored with the Unity project and exposed at runtime through the immutable `AppleFoundationModels.Configuration` snapshot.
 
 ## Project docs
 

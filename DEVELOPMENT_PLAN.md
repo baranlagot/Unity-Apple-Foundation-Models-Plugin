@@ -69,3 +69,9 @@ Add macOS parity first, then C#-managed sessions. Research tool calling before e
 ## First implementation slice
 
 The current slice implements the package skeleton and editor-first runtime core (TASK-001, TASK-003–010, the initial TASK-024 helper, and focused TASK-034/TASK-044 coverage). Native code deliberately follows after the managed contracts are executable and tested.
+
+## Progress
+
+- Completed: package scaffold, public managed API, provider abstraction, mock/unsupported providers, JSON helper, custom provider hook, and runtime tests.
+- Completed: TASK-019 Project Settings persistence/UI and settings-aware Editor provider selection.
+- In progress next: sample scenes and UI behavior for TASK-030–033, followed by the iOS native vertical slice.

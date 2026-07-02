@@ -11,6 +11,8 @@
 
 The default editor provider is deterministic and clearly labels its output as mock data. Call `GetAvailabilityAsync`, `GenerateTextAsync`, or `StreamTextAsync` from a MonoBehaviour. No Apple hardware is required.
 
+Configure project defaults under **Edit > Project Settings > Apple Foundation Models**. Disabling the Editor mock makes availability return `UnsupportedPlatform` unless a custom provider is registered.
+
 ## Use a custom provider
 
 Implement `IAppleFoundationModelsProvider`, register it with `AppleFoundationModels.SetProvider`, and call `ResetProvider` to restore the platform default.
