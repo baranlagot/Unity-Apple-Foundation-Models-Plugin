@@ -58,6 +58,15 @@ namespace Baran.AppleFoundationModels.Tests
         }
 
         [Test]
+        public void GenerateText_WhenTemperatureExceedsAppleRange_ThrowsClearError()
+        {
+            var options = new AppleFoundationModelsOptions { Temperature = 1.01f };
+
+            Assert.ThrowsAsync<ArgumentOutOfRangeException>(async () =>
+                await _client.GenerateTextAsync("hello", options));
+        }
+
+        [Test]
         public async Task GenerateJson_ParsesMockDataWithoutMutatingCallerOptions()
         {
             var options = new AppleFoundationModelsOptions { Instructions = "Keep it cozy." };
