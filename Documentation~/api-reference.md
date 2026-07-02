@@ -6,6 +6,8 @@ Static convenience facade for the default client. It exposes availability, text 
 
 Its read-only `Configuration` property exposes the active project defaults. Applying Editor settings recomposes only the default provider; an explicitly registered custom provider remains active until `ResetProvider` is called.
 
+`DefaultClient` exposes the currently composed `IAppleFoundationModelsClient` for dependency injection. It changes when a custom provider is registered or the default provider is reset, so capture it when constructing a controller rather than polling it per frame.
+
 ## `AppleFoundationModelsConfiguration`
 
 Immutable configuration snapshot containing Editor mock selection, native debug logging, default timeout seconds, and fallback policy. Unity Project Settings owns persistence; runtime code does not depend on `UnityEditor`.

@@ -74,7 +74,8 @@ The current slice implements the package skeleton and editor-first runtime core 
 
 - Completed: package scaffold, public managed API, provider abstraction, mock/unsupported providers, JSON helper, custom provider hook, and runtime tests.
 - Completed: TASK-019 Project Settings persistence/UI and settings-aware Editor provider selection.
-- Planned next: managed native request infrastructure with a fake transport, followed by the Swift/iOS bridge and executable sample scenes.
+- Completed locally: managed native lifecycle, Swift/iOS bridge source, C ABI contract tests, iOS postprocessor, and executable sample scenes.
+- Remaining v0.1 release gates: Swift/Xcode compilation on macOS, eligible-device integration tests, CI, and release documentation.
 
 ## v0.1 execution plan
 

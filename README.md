@@ -8,13 +8,14 @@ Apple Foundation Models for Unity is an experimental, open-source Unity package 
 
 ## Current status
 
-The editor-first managed core is implemented. It includes the public API, deterministic mock provider, custom provider injection, Project Settings, validation, streaming, and JSON parsing. The native iOS and macOS providers are planned and are not yet available in this development snapshot.
+The managed core and iOS native bridge source are implemented. This includes the public API, deterministic mock provider, custom provider injection, Project Settings, request lifecycle, cancellation, timeout handling, Swift bridge, Xcode postprocessing, streaming, and JSON parsing. Unity-side tests pass; final Swift compilation and eligible-device validation require macOS/Xcode and remain release gates. Native macOS support is planned for v0.2.
 
 ## Requirements and platform support
 
 - Unity 2022.3 or newer.
 - Unity Editor: deterministic mock provider.
-- iOS/macOS: managed API currently compiles; native Foundation Models integration is the next milestone.
+- iOS: native bridge for iOS 26+ on eligible Apple Intelligence devices; Xcode/device validation pending.
+- macOS: managed API compiles; native provider planned for v0.2.
 - Windows, Android, Linux, and WebGL: custom provider support; no native Apple model access.
 
 ## Install
@@ -73,6 +74,8 @@ AppleFoundationModels.SetProvider(myProvider);
 ```
 
 This hook supports deterministic tests and optional local or cloud fallbacks without coupling the core package to any vendor. Review the privacy and cost behavior of any fallback before shipping it.
+
+For dependency-injected components and samples, `AppleFoundationModels.DefaultClient` exposes the active `IAppleFoundationModelsClient` without exposing provider construction.
 
 ## Project Settings
 

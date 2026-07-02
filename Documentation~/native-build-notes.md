@@ -1,13 +1,26 @@
 # Native Build Notes
 
-The native bridge is the next implementation milestone.
-
-The planned dependency direction is:
+The implemented dependency direction is:
 
 ```text
 Unity public API -> native provider -> C ABI -> platform bridge -> shared Swift core
 ```
 
-The shared Swift core will own Foundation Models behavior. Platform bridge code will only translate C-compatible requests and callbacks. C# will assign request IDs and a single registry will own completion, streaming order, timeout, cancellation, and cleanup.
+The shared Swift actor owns Foundation Models sessions and tasks. The C ABI translates UTF-8 inputs and JSON events without exposing Swift types. C# assigns request IDs, captures callback scheduling, and uses a single registry for completion, streaming order, timeout, cancellation, late-event rejection, and cleanup.
 
-Apple SDK availability checks and exact Foundation Models signatures must be verified against the targeted Xcode SDK before native symbols are committed.
+The iOS postprocessor copies the shared Swift sources into `UnityFramework`, weak-links `FoundationModels.framework`, configures Swift modules, and enforces a minimum iOS 26 deployment target. It is idempotent across repeated exports.
+
+The exported C symbols are:
+
+```text
+AFM_SetEventCallback
+AFM_SetDebugLogging
+AFM_GetAvailability
+AFM_GenerateText
+AFM_StreamText
+AFM_CancelRequest
+```
+
+Apple streams cumulative response snapshots. The Swift core validates that snapshots are monotonic and emits only the appended delta to C#.
+
+Unity-side ABI and iOS-target postprocessor tests run on Windows with iOS Build Support installed. Final Swift compilation, Xcode linking, and eligible-device behavior must be validated on macOS before v0.1 release.

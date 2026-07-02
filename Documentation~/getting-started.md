@@ -17,9 +17,15 @@ Configure project defaults under **Edit > Project Settings > Apple Foundation Mo
 
 Implement `IAppleFoundationModelsProvider`, register it with `AppleFoundationModels.SetProvider`, and call `ResetProvider` to restore the platform default.
 
-## Build targets
+## Build to iOS
 
-Native iOS and macOS integrations are not part of the current managed-core snapshot. Unsupported players return `UnsupportedPlatform` and can use a custom provider. Native setup instructions will be expanded with the iOS bridge milestone.
+1. Switch the Unity build target to iOS.
+2. Build the Unity project normally.
+3. The postprocessor copies the shared Swift core, links `FoundationModels.framework`, configures Swift, and raises deployment targets below iOS 26.
+4. Open the generated project in a compatible Xcode version on macOS and build for an eligible device.
+5. Call `GetAvailabilityAsync` before generation because Apple Intelligence can be disabled or the model may still be downloading.
+
+Final Swift/Xcode and device validation is still required for this development snapshot. Native macOS integration is planned for v0.2. Other unsupported players return `UnsupportedPlatform` and can use a custom provider.
 
 ## Troubleshooting
 
