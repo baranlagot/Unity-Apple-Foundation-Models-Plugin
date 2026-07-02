@@ -1,0 +1,23 @@
+* text=auto eol=lf
+
+*.cs text eol=lf
+*.asmdef text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.meta text eol=lf whitespace=-blank-at-eol
+*.asset text eol=lf whitespace=-blank-at-eol
+*.unity text eol=lf whitespace=-blank-at-eol
+*.yml text eol=lf
+*.yaml text eol=lf
+*.swift text eol=lf
+*.h text eol=lf
+*.m text eol=lf
+*.mm text eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.pdf binary
+*.bundle binary
+*.xcframework binary

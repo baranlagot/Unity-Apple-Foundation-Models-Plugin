@@ -1,0 +1,43 @@
+{
+  "name": "com.baran.apple-foundation-models",
+  "version": "0.1.0",
+  "displayName": "Apple Foundation Models for Unity",
+  "description": "Unity plugin for Apple Foundation Models on iOS and macOS, including on-device text generation, streaming, structured output, and availability checks.",
+  "unity": "2022.3",
+  "keywords": [
+    "apple",
+    "foundation-models",
+    "on-device-ai",
+    "ios",
+    "macos"
+  ],
+  "author": {
+    "name": "Baran Genç"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "com.unity.modules.jsonserialize": "1.0.0"
+  },
+  "samples": [
+    {
+      "displayName": "Availability Check",
+      "description": "Checks whether Apple Foundation Models are available on the current device.",
+      "path": "Samples~/AvailabilityCheck"
+    },
+    {
+      "displayName": "Text Generation",
+      "description": "Basic prompt-to-text generation sample.",
+      "path": "Samples~/TextGeneration"
+    },
+    {
+      "displayName": "Streaming Chat",
+      "description": "Streaming text output into a chat UI.",
+      "path": "Samples~/StreamingChat"
+    },
+    {
+      "displayName": "JSON Generation",
+      "description": "Generate structured JSON and parse it into C# data.",
+      "path": "Samples~/JsonGeneration"
+    }
+  ]
+}

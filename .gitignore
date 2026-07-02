@@ -1,0 +1,25 @@
+# IDE and generated solution files
+.vs/
+.idea/
+.vscode/
+*.csproj
+*.sln
+*.suo
+*.user
+*.userprefs
+
+# Build and operating-system artifacts
+[Bb]uild/
+[Bb]uilds/
+obj/
+*.tmp
+*.log
+.DS_Store
+Thumbs.db
+
+# Native build outputs and signing material
+DerivedData/
+*.xcworkspace/xcuserdata/
+*.xcodeproj/xcuserdata/
+*.mobileprovision
+*.p12
