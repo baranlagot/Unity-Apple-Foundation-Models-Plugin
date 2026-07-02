@@ -38,6 +38,8 @@ namespace Baran.AppleFoundationModels
             }
         }
 
+        public static IAppleFoundationModelsClient DefaultClient => CurrentClient;
+
         public static Task<AppleFoundationModelsAvailability> GetAvailabilityAsync()
         {
             return CurrentClient.GetAvailabilityAsync();
