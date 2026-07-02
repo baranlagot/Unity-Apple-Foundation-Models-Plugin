@@ -1,0 +1,26 @@
+{
+  "name": "Baran.AppleFoundationModels.Editor.Tests",
+  "rootNamespace": "Baran.AppleFoundationModels.Editor.Tests",
+  "references": [
+    "Baran.AppleFoundationModels",
+    "Baran.AppleFoundationModels.Editor"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": true,
+  "precompiledReferences": [
+    "nunit.framework.dll"
+  ],
+  "autoReferenced": false,
+  "defineConstraints": [
+    "UNITY_INCLUDE_TESTS"
+  ],
+  "versionDefines": [],
+  "noEngineReferences": false,
+  "optionalUnityReferences": [
+    "TestAssemblies"
+  ]
+}
