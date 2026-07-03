@@ -22,7 +22,7 @@ Tasks: TASK-001–010, TASK-024, TASK-034, TASK-037, TASK-039, TASK-044, TASK-04
 5. Add JSON deserialization behind an adapter and actionable parse errors.
 6. Cover orchestration, validation, streaming, cancellation, JSON, and provider replacement with Unity tests.
 
-Exit condition: the package imports in Unity 2022.3, editor tests pass, and public APIs work without Apple hardware.
+Exit condition: the package imports in Unity 6 (6000.0), editor tests pass, and public APIs work without Apple hardware.
 
 `TestProject~` is a small local validation host for running package tests without turning the package root into a Unity project. Unity ignores tilde-suffixed folders when importing the package.
 
@@ -76,7 +76,7 @@ The current slice implements the package skeleton and editor-first runtime core 
 - Completed: TASK-019 Project Settings persistence/UI and settings-aware Editor provider selection.
 - Completed locally: managed native lifecycle, warning-free Swift/iOS bridge validation, iOS postprocessor, and a clean Unity 6 export that builds and links through Xcode.
 - Completed locally: reusable diagnostic samples and the device-validation runner, with the Unity 6 Edit Mode suites passing (normal 46/46, iOS 48/48) and a hardened wrapper that fails on missing, empty, inconclusive, or non-passing results.
-- Remaining v0.1 release gates: validate Unity 2022.3, expand native/presenter coverage, prove CI execution, capture eligible and unavailable device reports, reconcile release metadata, and publish the final `v0.1.0` tag.
+- Remaining v0.1 release gates: prove CI execution, capture eligible and unavailable device reports, and publish the final `v0.1.0` tag. The minimum supported editor is now Unity 6 (`6000.0`); both the normal and iOS Edit Mode suites pass locally on Unity `6000.0.61f1`.
 - The verified status, prioritized remaining work, and separate refactoring options are maintained in `.github/IMPLEMENTATION_TASK.md`.
 
 ## v0.1 execution plan
@@ -85,7 +85,7 @@ Plan baseline: 2026-07-02.
 
 ### Scope decisions
 
-- v0.1 targets the stable iOS 26-era Foundation Models API and Unity 2022.3+ with IL2CPP. Newer beta-only Foundation Models APIs stay out of the first release.
+- v0.1 targets the stable iOS 26-era Foundation Models API and Unity 6 (`6000.0`) or newer with IL2CPP. Newer beta-only Foundation Models APIs stay out of the first release.
 - Native macOS parity, tool calling, native session persistence, schema reflection, and a cloud fallback implementation remain v0.2 work.
 - v0.1 structured JSON remains provider-neutral prompt-plus-parse behavior. Swift `Generable` types cannot be synthesized from arbitrary C# types at runtime.
 - Each stateless request owns a separate Swift `LanguageModelSession`. The bridge never shares one session between concurrent calls because a session only supports one active response.

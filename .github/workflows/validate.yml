@@ -32,12 +32,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - unity-version: 2022.3.0f1
-            build-target: default
-            custom-parameters: "-buildTarget StandaloneLinux64"
-          - unity-version: 2022.3.0f1
-            build-target: ios
-            custom-parameters: "-buildTarget iOS"
           - unity-version: 6000.0.61f1
             build-target: default
             custom-parameters: "-buildTarget StandaloneLinux64"
@@ -78,7 +72,6 @@ jobs:
       fail-fast: false
       matrix:
         unity-version:
-          - 2022.3.0f1
           - 6000.0.61f1
     steps:
       - uses: actions/checkout@v4

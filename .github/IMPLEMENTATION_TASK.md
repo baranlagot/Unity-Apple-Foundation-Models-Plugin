@@ -2,7 +2,7 @@
 
 ## Goal
 
-Ship `0.1.0` with a verified native iOS path, repeatable release checks, Unity 2022.3 and Unity 6 compatibility evidence, and device evidence from both eligible and unavailable configurations. Preserve the provider abstractions, deterministic Editor mock, custom-provider path, and unsupported-platform behavior.
+Ship `0.1.0` with a verified native iOS path, repeatable release checks, Unity 6 (`6000.0`) compatibility evidence, and device evidence from both eligible and unavailable configurations. Preserve the provider abstractions, deterministic Editor mock, custom-provider path, and unsupported-platform behavior.
 
 ## Current status
 
@@ -44,9 +44,14 @@ Verified locally on 2026-07-03 at `4b8bac4` with Unity `6000.0.61f1`, Xcode `26.
 - Native harness now covers the full bridge-owned stable error-code set (`duplicateRequest`, `invalidOptions`, `nonMonotonicStream`, `cancelled`, and the `nativeFailure` fallback) and snapshot-to-delta conversion (ordered deltas, empty-delta suppression, non-monotonic rejection) via an extracted, hardware-independent `AFMStreamAccumulator`.
 - **Fixed a false-success defect in `validate_swift_bridge.sh`:** it passed the harness as a non-primary file to the `swift` interpreter, which silently ignored the `@main` entry point and reported success without running a single assertion. The script now compiles a real executable with `swiftc -parse-as-library -warnings-as-errors` and runs it, and the previously latent `events` data race in the harness is fixed with a lock-guarded `Sendable` collector.
 
+### Section 4 — compatibility: minimum editor raised to Unity 6 (2026-07-03)
+
+- The minimum supported editor is now **Unity 6 (`6000.0`)**. `package.json` declares `"unity": "6000.0"`; the README, installation, getting-started, and development-plan docs match.
+- Both Edit Mode suites pass on two 6.x editors: Unity `6000.0.61f1` (normal 60/60, iOS 62/62) and Unity `6000.2.7f2` (normal 60/60, iOS 62/62), demonstrating forward compatibility across the 6.x line. `TestProject~` remains pinned to `6000.0.61f1`.
+- The CI Unity matrices dropped the `2022.3.0f1` entries and now run only `6000.0.61f1`, removing the previously unprovable minimum-version jobs.
+
 ### Failing or not yet proven
 
-- Unity `2022.3` is not installed locally, so the advertised minimum version has not been revalidated.
 - The GitHub Actions workflow has not run for the local commits. Its Unity jobs require a valid license, and the `swift-and-release` job targets `arm64-apple-macosx26.0` on a `macos-15` runner, so the Xcode/SDK toolchain still needs to be pinned to one that provides the macOS/iOS 26 SDK.
 - No eligible-device or unavailable-device report has been recorded.
 - The device runner always reports the native timeout scenario as `NotRun` with its default environment.
@@ -95,8 +100,8 @@ Exit gate: both required device reports exist and contain no device identifiers,
 
 ### 4. Validate compatibility and CI — P1
 
-- Install or provision the minimum supported Unity `2022.3` editor and iOS module.
-- Run normal and iOS-targeted Edit Mode suites on Unity `2022.3` and Unity `6000.0.61f1`.
+- Minimum supported editor set to Unity 6 (`6000.0`); no separate 2022.3 provisioning required.
+- Run normal and iOS-targeted Edit Mode suites on Unity `6000.0.61f1` (and, for forward-compat evidence, `6000.2.7f2`). Done locally.
 - Confirm unsupported targets compile and cannot invoke native imports.
 - Run the workflow and verify that every matrix entry actually executes tests and uploads readable results.
 - Pin or explicitly select a CI Xcode toolchain that contains the required iOS 26 SDK.
@@ -124,7 +129,7 @@ Exit gate: package version, release metadata, changelog, documentation, and Git 
 | --- | --- |
 | Strict Swift type-checking with zero warnings | Complete locally |
 | Clean Unity iOS export compiles and links | Complete locally on Unity 6 |
-| Unity 2022.3 and Unity 6, normal and iOS suites | Unity 6 normal 46/46 and iOS 48/48 pass; Unity 2022.3 unavailable locally |
+| Unity 6 (`6000.0`) minimum, normal and iOS suites | Complete: normal 60/60 and iOS 62/62 pass on `6000.0.61f1` and `6000.2.7f2` |
 | Presenter behavior tests and deterministic local mock | Partial |
 | Privacy-safe unavailable and eligible device reports | Open |
 | Full functional and lifecycle device matrix | Open |
