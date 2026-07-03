@@ -3,6 +3,7 @@ using System.Collections;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Baran.AppleFoundationModels.ImagePlayground;
 using Baran.AppleFoundationModels.Vision;
 using UnityEngine;
 
@@ -42,6 +43,7 @@ namespace Baran.AppleFoundationModels.Samples
 
         private IAppleFoundationModelsClient _client;
         private Texture2D _background;
+        private Texture2D _generatedImage;
 
         private string _prompt = "Write a short, cheerful greeting for a Unity developer.";
         private string _instructions = string.Empty;
@@ -103,6 +105,10 @@ namespace Baran.AppleFoundationModels.Samples
             if (_background != null)
             {
                 Destroy(_background);
+            }
+            if (_generatedImage != null)
+            {
+                Destroy(_generatedImage);
             }
         }
 
@@ -217,6 +223,22 @@ namespace Baran.AppleFoundationModels.Samples
                 CaptureAndAnalyze(AppleVisionRequestKind.RecognizeText);
             }
             GUILayout.EndHorizontal();
+            GUILayout.Space(14);
+
+            // Image Playground — on-device image generation (needs Apple Intelligence).
+            GUILayout.Label("Image generation (Image Playground)", _section);
+            GUILayout.Label(
+                "Generates an image from the prompt above. Requires an Apple Intelligence device.",
+                _hint);
+            if (Button("Generate Image"))
+            {
+                _ = GenerateImageAsync();
+            }
+            if (_generatedImage != null)
+            {
+                var rect = GUILayoutUtility.GetRect(220f, 220f);
+                GUI.DrawTexture(rect, _generatedImage, ScaleMode.ScaleToFit);
+            }
             GUILayout.Space(14);
 
             // Event log.
@@ -564,6 +586,53 @@ namespace Baran.AppleFoundationModels.Samples
             }
 
             _ = RunVisionAsync(kind, png);
+        }
+
+        private async Task GenerateImageAsync()
+        {
+            if (_busy)
+            {
+                return;
+            }
+
+            if (!AppleImagePlayground.IsSupported)
+            {
+                SetStatus("Image Playground needs an Apple Intelligence device.", SampleTone.Warning);
+                Append("Image Playground is only available on device.");
+                return;
+            }
+
+            _busy = true;
+            SetStatus("Generating image...", SampleTone.Working);
+            _output = "Generating an image for: \"" + Trim(_prompt) + "\"";
+            Append("Image generation: \"" + Trim(_prompt) + "\"");
+            try
+            {
+                var png = await AppleImagePlayground.GenerateAsync(_prompt);
+                if (_generatedImage == null)
+                {
+                    _generatedImage = new Texture2D(2, 2);
+                }
+
+                if (_generatedImage.LoadImage(png))
+                {
+                    _output = "Generated a " + _generatedImage.width + " x " +
+                              _generatedImage.height + " image (shown below).";
+                    SetStatus("Image generated.", SampleTone.Success);
+                }
+                else
+                {
+                    SetStatus("Could not load the generated image.", SampleTone.Error);
+                }
+            }
+            catch (Exception exception)
+            {
+                Fail("Image", exception);
+            }
+            finally
+            {
+                _busy = false;
+            }
         }
 
         private async Task RunVisionAsync(AppleVisionRequestKind kind, byte[] png)
