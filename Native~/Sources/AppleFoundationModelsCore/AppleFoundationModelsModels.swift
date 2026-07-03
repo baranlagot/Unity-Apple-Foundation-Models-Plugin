@@ -98,3 +98,24 @@ enum AFMBridgeError: Error {
     case invalidOptions
     case nonMonotonicStream
 }
+
+/// Converts the model's cumulative streaming snapshots into ordered, non-overlapping
+/// deltas. Kept free of any FoundationModels dependency so the conversion contract can
+/// be validated without Apple Intelligence hardware.
+struct AFMStreamAccumulator: Sendable {
+    private(set) var accumulated: String = ""
+
+    /// Returns the newly appended text for a cumulative snapshot. The returned delta may
+    /// be empty when a snapshot repeats the previous content. Throws
+    /// `AFMBridgeError.nonMonotonicStream` when a snapshot is not an extension of the
+    /// previously observed content.
+    mutating func delta(for snapshot: String) throws -> String {
+        guard snapshot.hasPrefix(accumulated) else {
+            throw AFMBridgeError.nonMonotonicStream
+        }
+
+        let delta = String(snapshot.dropFirst(accumulated.count))
+        accumulated = snapshot
+        return delta
+    }
+}

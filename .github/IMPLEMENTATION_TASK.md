@@ -18,7 +18,7 @@ Verified locally on 2026-07-03 at `4b8bac4` with Unity `6000.0.61f1`, Xcode `26.
 ### Verified passing
 
 - Strict Swift type-checking succeeds with complete concurrency checks and warnings treated as errors.
-- The native Swift harness passes event encoding, one stable error mapping, invalid options, duplicate request IDs, and cancel-before-start behavior.
+- The native Swift harness (now compiled and executed as a real `@main` executable) passes event encoding, the full bridge-owned stable error-code set, snapshot-to-delta conversion, invalid options, duplicate request IDs, and cancel-before-start behavior.
 - A clean Unity 6 iOS export succeeds without manual Xcode edits.
 - The generated `UnityFramework` project contains one copy of each shared Swift core file, weak-links `FoundationModels.framework`, and builds and links with code signing disabled.
 - Release metadata validation passes when no expected Git tag is supplied.
@@ -34,15 +34,25 @@ Verified locally on 2026-07-03 at `4b8bac4` with Unity `6000.0.61f1`, Xcode `26.
   - `RunAsync_WhenMockProviderIsActive_ExercisesFunctionalScenarios`: the JSON fake now deserializes a JSON payload into the runner-requested generic type via `JsonUtility.FromJson<T>` instead of casting a test-private type.
 - `run_unity_editmode_tests.sh` no longer passes `-quit`, selects an explicit build target for both `default` (StandaloneOSX) and `ios`, and delegates result validation to `assert_unity_test_results.sh`, which rejects missing, empty, inconclusive, or non-passing result XML and requires exactly one `<test-run>` root with a positive total.
 
+### Section 2 — automated behavior coverage (2026-07-03)
+
+- Unity 6 normal Editor target: **60/60 pass, 0 fail**; iOS target: **62/62 pass, 0 fail**.
+- Presenter coverage now spans the required matrix: initial disabled state, busy-state re-entry (primary action ignored while a run is in flight), unavailable and provider-error states for availability, provider-error state for one-shot requests, ordered streaming with exactly-once completion, and streaming cancellation.
+- Device-runner coverage now spans availability failure, outer-token cancellation, single-scenario partial failure, the exactly-once streaming-completion guard, lifecycle observation (focus round-trip vs. not-run), report formatting (clipboard header vs. display body), and privacy-sensitive field exclusion.
+- Fixed a re-entrant `CancellationTokenSource` double-dispose in `DeviceValidationPresenter.CancelCurrentRun` (same class of bug as the streaming presenter).
+- Privacy hardening: the JSON scenario no longer embeds the generated quest title, and the repeated-request scenario now verifies distinct outputs to match its report claim.
+- Native harness now covers the full bridge-owned stable error-code set (`duplicateRequest`, `invalidOptions`, `nonMonotonicStream`, `cancelled`, and the `nativeFailure` fallback) and snapshot-to-delta conversion (ordered deltas, empty-delta suppression, non-monotonic rejection) via an extracted, hardware-independent `AFMStreamAccumulator`.
+- **Fixed a false-success defect in `validate_swift_bridge.sh`:** it passed the harness as a non-primary file to the `swift` interpreter, which silently ignored the `@main` entry point and reported success without running a single assertion. The script now compiles a real executable with `swiftc -parse-as-library -warnings-as-errors` and runs it, and the previously latent `events` data race in the harness is fixed with a lock-guarded `Sendable` collector.
+
 ### Failing or not yet proven
 
 - Unity `2022.3` is not installed locally, so the advertised minimum version has not been revalidated.
-- The GitHub Actions workflow has not run for the three local commits. Its Unity jobs require a valid license, and its iOS-targeted job has not been proven on the current Ubuntu GameCI runner.
+- The GitHub Actions workflow has not run for the local commits. Its Unity jobs require a valid license, and the `swift-and-release` job targets `arm64-apple-macosx26.0` on a `macos-15` runner, so the Xcode/SDK toolchain still needs to be pinned to one that provides the macOS/iOS 26 SDK.
 - No eligible-device or unavailable-device report has been recorded.
 - The device runner always reports the native timeout scenario as `NotRun` with its default environment.
 - On an iOS device the report cannot currently obtain the Xcode version, and `PackageRevision` remains the constant `local-working-copy`.
-- Presenter coverage is still narrower than the required busy, unavailable, error, cancellation, ordered-streaming, completion, and mock-labeling matrix.
-- The native harness does not yet cover active cancellation, stream snapshot-to-delta conversion, the complete availability mapping, or the stable error-code set.
+- Active native cancellation of a running generation is not covered by the harness because it requires an on-device model session; it remains device-evidence work.
+- The native harness does not yet exercise the availability status mapping, which reads `SystemLanguageModel.default.availability` directly and would require a testable seam or device state.
 - `package.json` still describes native macOS functionality even though native macOS support is planned for v0.2.
 
 ## Remaining implementation plan

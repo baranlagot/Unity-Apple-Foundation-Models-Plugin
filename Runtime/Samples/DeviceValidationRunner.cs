@@ -268,13 +268,15 @@ namespace Baran.AppleFoundationModels.Samples
                     cancellationToken: cancellationToken);
                 var passed = !string.IsNullOrWhiteSpace(quest.title) &&
                              !string.IsNullOrWhiteSpace(quest.objective);
+                // Do not embed the generated title/objective: the report must stay free of
+                // model-generated content so it is safe to share as device evidence.
                 return new DeviceValidationScenarioResult(
                     "Json",
                     passed
                         ? DeviceValidationScenarioOutcome.Passed
                         : DeviceValidationScenarioOutcome.Failed,
                     passed
-                        ? "Parsed JSON for quest '" + quest.title + "'."
+                        ? "Parsed a structured quest payload with the expected fields populated."
                         : "The JSON payload did not populate the expected fields.");
             }
             catch (Exception exception)
@@ -298,7 +300,8 @@ namespace Baran.AppleFoundationModels.Samples
                     "Reply with the word beta.",
                     cancellationToken: cancellationToken);
                 var passed = !string.IsNullOrWhiteSpace(first.Text) &&
-                             !string.IsNullOrWhiteSpace(second.Text);
+                             !string.IsNullOrWhiteSpace(second.Text) &&
+                             !string.Equals(first.Text, second.Text, StringComparison.Ordinal);
                 return new DeviceValidationScenarioResult(
                     "RepeatedRequests",
                     passed
@@ -306,7 +309,7 @@ namespace Baran.AppleFoundationModels.Samples
                         : DeviceValidationScenarioOutcome.Failed,
                     passed
                         ? "Sequential requests completed with distinct outputs."
-                        : "One of the sequential requests returned an empty payload.");
+                        : "Sequential requests returned an empty or duplicate payload.");
             }
             catch (Exception exception)
             {
