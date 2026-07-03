@@ -12,7 +12,8 @@ namespace Baran.AppleFoundationModels.Editor.Tests
             ("AvailabilityCheck", "AvailabilityCheckExample.cs", "AvailabilityCheck.unity"),
             ("TextGeneration", "TextGenerationExample.cs", "TextGeneration.unity"),
             ("StreamingChat", "StreamingChatExample.cs", "StreamingChat.unity"),
-            ("JsonGeneration", "JsonGenerationExample.cs", "JsonGeneration.unity")
+            ("JsonGeneration", "JsonGenerationExample.cs", "JsonGeneration.unity"),
+            ("DeviceValidation", "DeviceValidationExample.cs", "DeviceValidation.unity")
         };
 
         [Test]
@@ -50,7 +51,7 @@ namespace Baran.AppleFoundationModels.Editor.Tests
         }
 
         [Test]
-        public void EverySampleController_UsesInjectableDefaultClientAndBuiltInView()
+        public void EverySampleController_UsesTheSharedDiagnosticShell()
         {
             var packageRoot = GetPackageRoot();
             foreach (var sample in Samples)
@@ -60,9 +61,8 @@ namespace Baran.AppleFoundationModels.Editor.Tests
                     "Samples~",
                     sample.Folder,
                     sample.Script));
-                StringAssert.Contains("IAppleFoundationModelsClient", source);
-                StringAssert.Contains("AppleFoundationModels.DefaultClient", source);
-                StringAssert.Contains("OnGUI", source);
+                StringAssert.Contains("DiagnosticSampleBehaviourBase", source);
+                StringAssert.Contains("CreatePresenter", source);
             }
         }
 

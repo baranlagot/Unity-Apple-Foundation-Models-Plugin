@@ -1,61 +1,32 @@
-using System;
-using UnityEngine;
-
 namespace Baran.AppleFoundationModels.Samples
 {
-    public sealed class JsonGenerationExample : MonoBehaviour
+    public sealed class JsonGenerationExample : DiagnosticSampleBehaviourBase
     {
-        private IAppleFoundationModelsClient _client;
-        private string _result = "Generated quest fields appear here.";
-        private bool _isBusy;
+        [UnityEngine.SerializeField]
+        private string prompt =
+            "Generate a short cozy fetch quest for a pet game.";
 
-        private void Awake()
+        protected override ISampleDiagnosticPresenter CreatePresenter(
+            IAppleFoundationModelsClient client,
+            IDiagnosticShellView view)
         {
-            _client = AppleFoundationModels.DefaultClient;
-        }
-
-        public async void GenerateQuest()
-        {
-            if (_isBusy)
-            {
-                return;
-            }
-
-            _isBusy = true;
-            _result = "Generating quest…";
-            try
-            {
-                var quest = await _client.GenerateJsonAsync<QuestData>(
-                    "Generate a short cozy fetch quest for a pet game.");
-                _result =
-                    $"Title: {quest.title}\n" +
-                    $"NPC: {quest.npcName}\n" +
-                    $"Objective: {quest.objective}\n" +
-                    $"Reward: {quest.rewardCoins} coins";
-            }
-            catch (Exception exception)
-            {
-                _result = exception.Message;
-            }
-            finally
-            {
-                _isBusy = false;
-            }
-        }
-
-        private void OnGUI()
-        {
-            GUILayout.BeginArea(new Rect(24, 24, 620, 340), GUI.skin.box);
-            GUILayout.Label("Apple Foundation Models — JSON Quest Generation");
-            GUI.enabled = !_isBusy;
-            if (GUILayout.Button("Generate Cozy Quest", GUILayout.Height(36)))
-            {
-                GenerateQuest();
-            }
-            GUI.enabled = true;
-            GUILayout.Space(12);
-            GUILayout.TextArea(_result, GUILayout.ExpandHeight(true));
-            GUILayout.EndArea();
+            return new SampleRequestPresenter(
+                view,
+                "Apple Foundation Models - JSON Quest Generation",
+                "Generates structured JSON through the client helper and formats it in the reusable diagnostic shell.",
+                prompt,
+                "Generate Quest",
+                async (currentPrompt, cancellationToken) =>
+                {
+                    var quest = await client.GenerateJsonAsync<QuestData>(
+                        currentPrompt,
+                        cancellationToken: cancellationToken);
+                    return
+                        "Title: " + quest.title + "\n" +
+                        "NPC: " + quest.npcName + "\n" +
+                        "Objective: " + quest.objective + "\n" +
+                        "Reward: " + quest.rewardCoins + " coins";
+                });
         }
     }
 

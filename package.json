@@ -16,7 +16,8 @@
   },
   "license": "MIT",
   "dependencies": {
-    "com.unity.modules.jsonserialize": "1.0.0"
+    "com.unity.modules.jsonserialize": "1.0.0",
+    "com.unity.modules.uielements": "1.0.0"
   },
   "samples": [
     {
@@ -38,6 +39,11 @@
       "displayName": "JSON Generation",
       "description": "Generate structured JSON and parse it into C# data.",
       "path": "Samples~/JsonGeneration"
+    },
+    {
+      "displayName": "Device Validation",
+      "description": "Run repeatable local or device validation checks and copy a privacy-safe report.",
+      "path": "Samples~/DeviceValidation"
     }
   ]
 }
