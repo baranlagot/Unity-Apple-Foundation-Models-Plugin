@@ -38,6 +38,7 @@ namespace Baran.AppleFoundationModels.Editor
         internal const string MinimumIOSVersion = "26.0";
         internal const string SwiftVersion = "5.0";
         internal const string FrameworkName = "FoundationModels.framework";
+        internal const string VisionFrameworkName = "Vision.framework";
         internal const string NativeProjectRoot =
             "Libraries/com.baran.apple-foundation-models/Native/AppleFoundationModelsCore";
 
@@ -103,6 +104,12 @@ namespace Baran.AppleFoundationModels.Editor
                 project.UnityFrameworkTargetGuid,
                 FrameworkName,
                 weak: true);
+            // Vision (image classification and OCR) ships in every supported iOS SDK, so it
+            // is linked normally rather than weakly.
+            project.AddFramework(
+                project.UnityFrameworkTargetGuid,
+                VisionFrameworkName,
+                weak: false);
             project.SetBuildProperty(
                 project.UnityFrameworkTargetGuid,
                 "SWIFT_VERSION",

@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Baran.AppleFoundationModels.Vision;
 using UnityEngine;
 
 namespace Baran.AppleFoundationModels.Samples
@@ -198,6 +200,23 @@ namespace Baran.AppleFoundationModels.Samples
             {
                 _ = RunFullValidationAsync();
             }
+            GUILayout.Space(14);
+
+            // Vision — on-device image understanding (no Apple Intelligence required).
+            GUILayout.Label("Vision (image understanding)", _section);
+            GUILayout.Label(
+                "Captures the current screen and analyses it on-device with the Vision framework.",
+                _hint);
+            GUILayout.BeginHorizontal();
+            if (Button("Classify Screen"))
+            {
+                CaptureAndAnalyze(AppleVisionRequestKind.Classify);
+            }
+            if (Button("Read Text (OCR)"))
+            {
+                CaptureAndAnalyze(AppleVisionRequestKind.RecognizeText);
+            }
+            GUILayout.EndHorizontal();
             GUILayout.Space(14);
 
             // Event log.
@@ -502,6 +521,68 @@ namespace Baran.AppleFoundationModels.Samples
             catch (Exception exception)
             {
                 Fail("Validation", exception);
+            }
+            finally
+            {
+                _busy = false;
+            }
+        }
+
+        private void CaptureAndAnalyze(AppleVisionRequestKind kind)
+        {
+            if (_busy)
+            {
+                return;
+            }
+
+            if (!AppleVision.IsSupported)
+            {
+                SetStatus("Vision runs on an iOS device or Simulator.", SampleTone.Warning);
+                Append("Vision is only available in an iOS player.");
+                return;
+            }
+
+            StartCoroutine(CaptureRoutine(kind));
+        }
+
+        private IEnumerator CaptureRoutine(AppleVisionRequestKind kind)
+        {
+            _busy = true;
+            SetStatus("Capturing screen...", SampleTone.Working);
+            // The screenshot must be grabbed after the frame has finished rendering.
+            yield return new WaitForEndOfFrame();
+
+            var texture = ScreenCapture.CaptureScreenshotAsTexture();
+            byte[] png;
+            try
+            {
+                png = texture.EncodeToPNG();
+            }
+            finally
+            {
+                Destroy(texture);
+            }
+
+            _ = RunVisionAsync(kind, png);
+        }
+
+        private async Task RunVisionAsync(AppleVisionRequestKind kind, byte[] png)
+        {
+            var label = kind == AppleVisionRequestKind.RecognizeText ? "Reading text" : "Classifying";
+            SetStatus(label + "...", SampleTone.Working);
+            _output = string.Empty;
+            Append(label + " the captured screen.");
+            try
+            {
+                var result = await AppleVision.AnalyzeAsync(png, kind);
+                _output = result.Items.Count == 0
+                    ? "(no results)"
+                    : string.Join("\n", result.Items);
+                SetStatus(label + " complete (" + result.Items.Count + " results).", SampleTone.Success);
+            }
+            catch (Exception exception)
+            {
+                Fail("Vision", exception);
             }
             finally
             {
