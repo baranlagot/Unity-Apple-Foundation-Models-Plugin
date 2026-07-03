@@ -112,18 +112,22 @@ namespace Baran.AppleFoundationModels.Samples
 
         private void CancelActiveRequest(bool disposeOnly = false)
         {
-            if (_cancellation == null)
+            var cancellation = _cancellation;
+            if (cancellation == null)
             {
                 return;
             }
 
+            // Clear the field before cancelling so a re-entrant call triggered by the
+            // synchronous cancellation continuation observes null and cannot double-dispose.
+            _cancellation = null;
+
             if (!disposeOnly)
             {
-                _cancellation.Cancel();
+                cancellation.Cancel();
             }
 
-            _cancellation.Dispose();
-            _cancellation = null;
+            cancellation.Dispose();
         }
     }
 }

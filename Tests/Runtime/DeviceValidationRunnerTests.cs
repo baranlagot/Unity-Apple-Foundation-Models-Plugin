@@ -125,14 +125,12 @@ namespace Baran.AppleFoundationModels.Samples.Tests
                 CancellationToken cancellationToken = default)
             {
                 cancellationToken.ThrowIfCancellationRequested();
-                object quest = new ValidationQuestData
-                {
-                    title = "Quest",
-                    objective = "Objective",
-                    rewardCoins = 10,
-                    npcName = "Mittens"
-                };
-                return Task.FromResult((T)quest);
+
+                // Honor the real generic contract: deserialize a JSON payload into the
+                // caller-requested type rather than casting from a test-private type.
+                const string json =
+                    "{\"title\":\"Quest\",\"objective\":\"Objective\",\"rewardCoins\":10,\"npcName\":\"Mittens\"}";
+                return Task.FromResult(UnityEngine.JsonUtility.FromJson<T>(json));
             }
 
             public async Task StreamTextAsync(
@@ -169,15 +167,6 @@ namespace Baran.AppleFoundationModels.Samples.Tests
 
                     throw;
                 }
-            }
-
-            [Serializable]
-            private sealed class ValidationQuestData
-            {
-                public string title;
-                public string objective;
-                public int rewardCoins;
-                public string npcName;
             }
         }
     }

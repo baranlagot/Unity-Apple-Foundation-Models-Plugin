@@ -74,8 +74,10 @@ The current slice implements the package skeleton and editor-first runtime core 
 
 - Completed: package scaffold, public managed API, provider abstraction, mock/unsupported providers, JSON helper, custom provider hook, and runtime tests.
 - Completed: TASK-019 Project Settings persistence/UI and settings-aware Editor provider selection.
-- Completed locally: managed native lifecycle, Swift/iOS bridge source, C ABI contract tests, iOS postprocessor, and executable sample scenes.
-- Remaining v0.1 release gates: eligible-device integration evidence on Apple Intelligence hardware and the final `v0.1.0` tag publication.
+- Completed locally: managed native lifecycle, warning-free Swift/iOS bridge validation, iOS postprocessor, and a clean Unity 6 export that builds and links through Xcode.
+- Completed locally: reusable diagnostic samples and the device-validation runner, with the Unity 6 Edit Mode suites passing (normal 46/46, iOS 48/48) and a hardened wrapper that fails on missing, empty, inconclusive, or non-passing results.
+- Remaining v0.1 release gates: validate Unity 2022.3, expand native/presenter coverage, prove CI execution, capture eligible and unavailable device reports, reconcile release metadata, and publish the final `v0.1.0` tag.
+- The verified status, prioritized remaining work, and separate refactoring options are maintained in `.github/IMPLEMENTATION_TASK.md`.
 
 ## v0.1 execution plan
 
