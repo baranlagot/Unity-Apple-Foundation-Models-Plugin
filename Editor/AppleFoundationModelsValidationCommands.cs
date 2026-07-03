@@ -13,65 +13,111 @@ namespace Baran.AppleFoundationModels.Editor
     internal static class AppleFoundationModelsValidationCommands
     {
         private const string TemporaryScenePath = "Assets/__AFMValidationScene.unity";
-        private const string DeviceValidationScenePath =
-            "Assets/Samples/DeviceValidation/DeviceValidation.unity";
-        private const string DeviceValidationBundleId =
-            "com.baran.applefoundationmodels.devicevalidation";
+        private const string ShowcaseScenePath = "Assets/__AFMShowcaseScene.unity";
+        private const string ShowcaseTypeName =
+            "Baran.AppleFoundationModels.Samples.CapabilityShowcaseExample";
+        private const string ShowcaseBundleId =
+            "com.baran.applefoundationmodels.showcase";
 
         /// <summary>
-        /// Builds the all-capabilities Device Validation sample scene into an iOS Xcode
-        /// project ready for on-device testing. Signing team and the physical device are
-        /// configured in Xcode after export.
+        /// Builds the capability-showcase sample into an iOS Xcode project ready for
+        /// on-device testing. The scene is generated in code with a camera and the IMGUI
+        /// showcase behaviour so it renders reliably on device without any UI theme asset.
+        /// Signing team and the physical device are configured in Xcode after export.
         /// </summary>
-        public static void ExportIOSDeviceValidationApp()
+        public static void ExportIOSCapabilityShowcaseApp()
         {
             var outputPath = ResolveExportPath();
+            var showcaseType = ResolveShowcaseType();
 
-            var scenePath = DeviceValidationScenePath;
-            if (!File.Exists(scenePath))
-            {
-                var matches = AssetDatabase.FindAssets("DeviceValidation t:Scene");
-                scenePath = matches.Length > 0
-                    ? AssetDatabase.GUIDToAssetPath(matches[0])
-                    : null;
-            }
-
-            if (string.IsNullOrWhiteSpace(scenePath) || !File.Exists(scenePath))
-            {
-                throw new InvalidOperationException(
-                    "Could not locate the DeviceValidation sample scene. Expected it at " +
-                    DeviceValidationScenePath + ".");
-            }
+            // Set AFM_IOS_SDK=simulator to target the iOS Simulator (which uses the host
+            // Mac's Apple Intelligence); anything else builds for a physical device.
+            var useSimulator = string.Equals(
+                Environment.GetEnvironmentVariable("AFM_IOS_SDK"),
+                "simulator",
+                StringComparison.OrdinalIgnoreCase);
 
             PlayerSettings.SetApplicationIdentifier(
                 BuildTargetGroup.iOS,
-                DeviceValidationBundleId);
+                ShowcaseBundleId);
             PlayerSettings.SetScriptingBackend(
                 NamedBuildTarget.iOS,
                 ScriptingImplementation.IL2CPP);
-            PlayerSettings.iOS.sdkVersion = iOSSdkVersion.DeviceSDK;
+            PlayerSettings.iOS.sdkVersion = useSimulator
+                ? iOSSdkVersion.SimulatorSDK
+                : iOSSdkVersion.DeviceSDK;
             PlayerSettings.iOS.targetOSVersionString = "26.0";
             PlayerSettings.iOS.targetDevice = iOSTargetDevice.iPhoneAndiPad;
-            PlayerSettings.productName = "AFM Device Validation";
+            PlayerSettings.productName = "AFM Showcase";
 
-            var report = BuildPipeline.BuildPlayer(
-                new BuildPlayerOptions
-                {
-                    scenes = new[] { scenePath },
-                    target = BuildTarget.iOS,
-                    targetGroup = BuildTargetGroup.iOS,
-                    locationPathName = outputPath
-                });
-            if (report.summary.result != BuildResult.Succeeded)
+            var originalScenes = EditorBuildSettings.scenes;
+            try
             {
-                throw new BuildFailedException(
-                    "iOS device-validation build failed with result " +
-                    report.summary.result + ".");
+                var scene = EditorSceneManager.NewScene(
+                    NewSceneSetup.EmptyScene,
+                    NewSceneMode.Single);
+
+                var cameraObject = new GameObject("Main Camera", typeof(Camera));
+                cameraObject.tag = "MainCamera";
+                var camera = cameraObject.GetComponent<Camera>();
+                camera.clearFlags = CameraClearFlags.SolidColor;
+                camera.backgroundColor = new Color(0.09f, 0.10f, 0.13f);
+                SceneManager.MoveGameObjectToScene(cameraObject, scene);
+
+                var showcaseObject = new GameObject(
+                    "AFM Capability Showcase",
+                    showcaseType);
+                SceneManager.MoveGameObjectToScene(showcaseObject, scene);
+
+                EditorSceneManager.SaveScene(scene, ShowcaseScenePath);
+                EditorBuildSettings.scenes = new[]
+                {
+                    new EditorBuildSettingsScene(ShowcaseScenePath, enabled: true)
+                };
+
+                var report = BuildPipeline.BuildPlayer(
+                    new BuildPlayerOptions
+                    {
+                        scenes = new[] { ShowcaseScenePath },
+                        target = BuildTarget.iOS,
+                        targetGroup = BuildTargetGroup.iOS,
+                        locationPathName = outputPath
+                    });
+                if (report.summary.result != BuildResult.Succeeded)
+                {
+                    throw new BuildFailedException(
+                        "iOS capability-showcase build failed with result " +
+                        report.summary.result + ".");
+                }
+            }
+            finally
+            {
+                EditorBuildSettings.scenes = originalScenes;
+                if (AssetDatabase.DeleteAsset(ShowcaseScenePath))
+                {
+                    AssetDatabase.SaveAssets();
+                }
             }
 
             Debug.Log(
-                "Apple Foundation Models exported the Device Validation iOS app to " +
+                "Apple Foundation Models exported the capability-showcase iOS app to " +
                 outputPath + ".");
+        }
+
+        private static Type ResolveShowcaseType()
+        {
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                var type = assembly.GetType(ShowcaseTypeName);
+                if (type != null)
+                {
+                    return type;
+                }
+            }
+
+            throw new InvalidOperationException(
+                "Could not find " + ShowcaseTypeName +
+                ". Ensure the showcase sample compiled into the project.");
         }
 
         private static string ResolveExportPath()

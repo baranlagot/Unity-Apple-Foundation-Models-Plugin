@@ -11,6 +11,8 @@
 # Build and operating-system artifacts
 [Bb]uild/
 [Bb]uilds/
+# Exported iOS Xcode projects (the "~" keeps Unity from importing them as package content)
+[Bb]uilds~/
 obj/
 *.tmp
 *.log

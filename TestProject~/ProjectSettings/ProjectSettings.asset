@@ -13,7 +13,7 @@ PlayerSettings:
   useOnDemandResources: 0
   accelerometerFrequency: 60
   companyName: DefaultCompany
-  productName: AFM Device Validation
+  productName: AFM Showcase
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}
   m_SplashScreenBackgroundColor: {r: 0.12156863, g: 0.12156863, b: 0.1254902, a: 1}
@@ -165,7 +165,7 @@ PlayerSettings:
   androidMaxAspectRatio: 2.4
   androidMinAspectRatio: 1
   applicationIdentifier:
-    iPhone: com.baran.applefoundationmodels.devicevalidation
+    iPhone: com.baran.applefoundationmodels.showcase
   buildNumber:
     Standalone: 0
     VisionOS: 0
@@ -188,7 +188,7 @@ PlayerSettings:
   StripUnusedMeshComponents: 0
   strictShaderVariantMatching: 0
   VertexChannelCompressionMask: 4054
-  iPhoneSdkVersion: 988
+  iPhoneSdkVersion: 989
   iOSSimulatorArchitecture: 0
   iOSTargetOSVersionString: 26.0
   tvOSSdkVersion: 0
