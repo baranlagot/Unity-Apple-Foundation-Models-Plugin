@@ -1,0 +1,63 @@
+name: validate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  swift-and-release:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Validate Swift bridge
+        run: ./scripts/validate_swift_bridge.sh
+      - name: Validate package release metadata
+        run: |
+          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
+            ./scripts/validate_package_release.sh "${GITHUB_REF_NAME}"
+          else
+            ./scripts/validate_package_release.sh
+          fi
+
+  unity-editmode:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - unity-version: 2022.3.0f1
+            build-target: default
+            custom-parameters: ""
+          - unity-version: 2022.3.0f1
+            build-target: ios
+            custom-parameters: "-buildTarget iOS"
+          - unity-version: 6000.0.61f1
+            build-target: default
+            custom-parameters: ""
+          - unity-version: 6000.0.61f1
+            build-target: ios
+            custom-parameters: "-buildTarget iOS"
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run Unity Edit Mode tests
+        uses: game-ci/unity-test-runner@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          projectPath: TestProject~
+          testMode: editmode
+          unityVersion: ${{ matrix.unity-version }}
+          customParameters: ${{ matrix.custom-parameters }}
+          artifactsPath: test-results/${{ matrix.unity-version }}-${{ matrix.build-target }}
+      - name: Upload Unity test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: unity-editmode-${{ matrix.unity-version }}-${{ matrix.build-target }}
+          path: test-results/${{ matrix.unity-version }}-${{ matrix.build-target }}

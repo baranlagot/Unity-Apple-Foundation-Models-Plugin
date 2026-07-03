@@ -8,13 +8,20 @@ Apple Foundation Models for Unity is an experimental, open-source Unity package 
 
 ## Current status
 
-The managed core and iOS native bridge source are implemented. This includes the public API, deterministic mock provider, custom provider injection, Project Settings, request lifecycle, cancellation, timeout handling, Swift bridge, Xcode postprocessing, streaming, and JSON parsing. Unity-side tests pass; final Swift compilation and eligible-device validation require macOS/Xcode and remain release gates. Native macOS support is planned for v0.2.
+The managed core and iOS native bridge are implemented and validated locally through:
+
+- strict Swift type-checking plus a native harness;
+- Unity Edit Mode tests on the default target and the iOS target;
+- repeatable Unity iOS export validation;
+- `xcodebuild` compilation of the generated `UnityFramework` target with signing disabled.
+
+The package now also includes a reusable UI Toolkit diagnostic shell, presenter-based samples, and a device validation sample that produces a privacy-safe report. Eligible-device behavior still needs to be recorded on Apple Intelligence hardware for final release evidence. Native macOS support remains planned for v0.2.
 
 ## Requirements and platform support
 
 - Unity 2022.3 or newer.
-- Unity Editor: deterministic mock provider.
-- iOS: native bridge for iOS 26+ on eligible Apple Intelligence devices; Xcode/device validation pending.
+- Unity Editor: deterministic mock provider plus the validation sample and reusable diagnostic shell.
+- iOS: native bridge for iOS 26+ on eligible Apple Intelligence devices; exported-Xcode validation is automated locally.
 - macOS: managed API compiles; native provider planned for v0.2.
 - Windows, Android, Linux, and WebGL: custom provider support; no native Apple model access.
 
@@ -76,6 +83,20 @@ AppleFoundationModels.SetProvider(myProvider);
 This hook supports deterministic tests and optional local or cloud fallbacks without coupling the core package to any vendor. Review the privacy and cost behavior of any fallback before shipping it.
 
 For dependency-injected components and samples, `AppleFoundationModels.DefaultClient` exposes the active `IAppleFoundationModelsClient` without exposing provider construction.
+
+## Validate locally
+
+Use the provided scripts from macOS:
+
+```bash
+./scripts/validate_swift_bridge.sh
+./scripts/run_unity_editmode_tests.sh /Applications/Unity/Hub/Editor/6000.0.61f1/Unity.app/Contents/MacOS/Unity default
+./scripts/run_unity_editmode_tests.sh /Applications/Unity/Hub/Editor/6000.0.61f1/Unity.app/Contents/MacOS/Unity ios
+./scripts/validate_exported_ios_project.sh /Applications/Unity/Hub/Editor/6000.0.61f1/Unity.app/Contents/MacOS/Unity
+./scripts/validate_package_release.sh v0.1.0
+```
+
+The GitHub Actions workflow runs the Swift bridge checks, release metadata validation, and Unity Edit Mode suites. The exported-Xcode build remains a local macOS validation step unless you attach a Unity-capable macOS runner.
 
 ## Project Settings
 

@@ -25,6 +25,8 @@ namespace Baran.AppleFoundationModels.Editor.Tests
             Assert.That(project.SourceFiles.Count, Is.EqualTo(3));
             Assert.That(project.Frameworks,
                 Does.Contain(AppleFoundationModelsIOSBuildIntegrator.FrameworkName));
+            Assert.That(project.WeakFrameworks,
+                Does.Contain(AppleFoundationModelsIOSBuildIntegrator.FrameworkName));
             Assert.That(project.BuildProperties[(project.UnityFrameworkTargetGuid, "SWIFT_VERSION")],
                 Is.EqualTo(AppleFoundationModelsIOSBuildIntegrator.SwiftVersion));
             Assert.That(project.BuildProperties[(project.UnityFrameworkTargetGuid, "IPHONEOS_DEPLOYMENT_TARGET")],
@@ -78,6 +80,8 @@ namespace Baran.AppleFoundationModels.Editor.Tests
 
             public HashSet<string> Frameworks { get; } = new HashSet<string>();
 
+            public HashSet<string> WeakFrameworks { get; } = new HashSet<string>();
+
             public Dictionary<(string Target, string Property), string> BuildProperties { get; } =
                 new Dictionary<(string Target, string Property), string>();
 
@@ -94,6 +98,10 @@ namespace Baran.AppleFoundationModels.Editor.Tests
             public void AddFramework(string targetGuid, string frameworkName, bool weak)
             {
                 Frameworks.Add(frameworkName);
+                if (weak)
+                {
+                    WeakFrameworks.Add(frameworkName);
+                }
             }
 
             public string GetBuildProperty(string targetGuid, string propertyName)

@@ -54,7 +54,7 @@ Exit condition: availability, one-shot generation, streaming, cancellation, and 
 Tasks: TASK-002, TASK-038–043, TASK-050.
 
 1. Complete API/native documentation and troubleshooting guides.
-2. Add structural, manifest, formatting, and Unity test CI checks.
+2. Add structural, manifest, Swift, and Unity test CI checks.
 3. Validate unsupported targets compile and return clear availability states.
 4. Run an iOS device test matrix, update the changelog, tag, and publish v0.1.0.
 
@@ -75,7 +75,7 @@ The current slice implements the package skeleton and editor-first runtime core 
 - Completed: package scaffold, public managed API, provider abstraction, mock/unsupported providers, JSON helper, custom provider hook, and runtime tests.
 - Completed: TASK-019 Project Settings persistence/UI and settings-aware Editor provider selection.
 - Completed locally: managed native lifecycle, Swift/iOS bridge source, C ABI contract tests, iOS postprocessor, and executable sample scenes.
-- Remaining v0.1 release gates: Swift/Xcode compilation on macOS, eligible-device integration tests, CI, and release documentation.
+- Remaining v0.1 release gates: eligible-device integration evidence on Apple Intelligence hardware and the final `v0.1.0` tag publication.
 
 ## v0.1 execution plan
 
@@ -209,7 +209,7 @@ Exit gate: all four imported sample scenes run in the Editor and their controlle
 
 Tasks: TASK-036, TASK-038–041, and remaining TASK-044–046 work.
 
-1. Add a device integration scene that runs availability, text, streaming, cancellation, timeout, and JSON checks with a copyable report.
+1. Add a device integration scene that runs availability, text, streaming, cancellation, timeout probe hooks, JSON, repeated, concurrent, and late-cancel checks with a copyable report.
 2. Test on at least one eligible device and one unavailable configuration.
 3. Verify background/foreground transitions, scene changes, repeated requests, concurrent request IDs, and late cancellation.
 4. Finish native troubleshooting, error mapping, platform support, API, and getting-started documentation.
