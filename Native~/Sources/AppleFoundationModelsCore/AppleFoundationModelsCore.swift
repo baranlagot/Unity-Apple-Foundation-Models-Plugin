@@ -77,24 +77,18 @@ actor AppleFoundationModelsCore {
                 to: prompt,
                 options: generationOptions
             )
-            var previous = ""
+            var accumulator = AFMStreamAccumulator()
 
             for try await snapshot in stream {
                 try Task.checkCancellation()
-                let current = snapshot.content
-                guard current.hasPrefix(previous) else {
-                    throw AFMBridgeError.nonMonotonicStream
-                }
-
-                let delta = String(current.dropFirst(previous.count))
+                let delta = try accumulator.delta(for: snapshot.content)
                 if !delta.isEmpty {
                     emit(.streamDelta(requestId: requestId, content: delta))
                 }
-                previous = current
             }
 
             try Task.checkCancellation()
-            emit(.complete(requestId: requestId, content: previous))
+            emit(.complete(requestId: requestId, content: accumulator.accumulated))
 #else
             emit(.failure(
                 requestId: requestId,

@@ -95,13 +95,24 @@ namespace Baran.AppleFoundationModels.Editor.Tests
         [Test]
         public void StreamingCore_ConvertsMonotonicSnapshotsIntoDeltas()
         {
+            var packageRoot = GetPackageRoot();
             var core = File.ReadAllText(Path.Combine(
-                GetPackageRoot(),
+                packageRoot,
                 "Native~/Sources/AppleFoundationModelsCore/AppleFoundationModelsCore.swift"));
+            var models = File.ReadAllText(Path.Combine(
+                packageRoot,
+                "Native~/Sources/AppleFoundationModelsCore/AppleFoundationModelsModels.swift"));
 
-            StringAssert.Contains("current.hasPrefix(previous)", core);
-            StringAssert.Contains("current.dropFirst(previous.count)", core);
+            // The streaming core delegates snapshot-to-delta conversion to the reusable,
+            // hardware-independent accumulator and still guards cancellation per snapshot.
+            StringAssert.Contains("AFMStreamAccumulator()", core);
+            StringAssert.Contains("accumulator.delta(for: snapshot.content)", core);
             StringAssert.Contains("Task.checkCancellation()", core);
+
+            // The accumulator owns the monotonic-prefix contract and delta extraction.
+            StringAssert.Contains("snapshot.hasPrefix(accumulated)", models);
+            StringAssert.Contains("snapshot.dropFirst(accumulated.count)", models);
+            StringAssert.Contains("AFMBridgeError.nonMonotonicStream", models);
         }
 
         private static string GetPackageRoot()

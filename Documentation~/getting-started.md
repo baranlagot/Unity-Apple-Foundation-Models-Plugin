@@ -2,7 +2,7 @@
 
 ## Install locally
 
-1. In Unity 2022.3+, open **Window > Package Manager**.
+1. In Unity 6 (6000.0) or newer, open **Window > Package Manager**.
 2. Select **Add package from disk**.
 3. Select this repository's `package.json`.
 4. Import one of the samples from the package details pane. The package now ships availability, text, streaming, JSON, and device-validation samples.

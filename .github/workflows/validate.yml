@@ -9,11 +9,17 @@ on:
 
 jobs:
   swift-and-release:
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Select Xcode 26
+        run: |
+          if [ -d /Applications/Xcode_26.app ]; then
+            sudo xcode-select -s /Applications/Xcode_26.app
+          fi
+          xcodebuild -version
       - name: Validate Swift bridge
         run: ./scripts/validate_swift_bridge.sh
       - name: Validate package release metadata
@@ -25,29 +31,34 @@ jobs:
           fi
 
   unity-editmode:
+    needs: swift-and-release
     runs-on: ubuntu-latest
+    timeout-minutes: 45
+    permissions:
+      # game-ci/unity-test-runner publishes the test results as a check run; without
+      # checks: write the default GITHUB_TOKEN fails with "Resource not accessible by
+      # integration" even when every test passes.
+      contents: read
+      checks: write
     strategy:
       fail-fast: false
       matrix:
         include:
-          - unity-version: 2022.3.0f1
-            build-target: default
-            custom-parameters: ""
-          - unity-version: 2022.3.0f1
-            build-target: ios
-            custom-parameters: "-buildTarget iOS"
           - unity-version: 6000.0.61f1
             build-target: default
-            custom-parameters: ""
+            custom-parameters: "-buildTarget StandaloneLinux64"
           - unity-version: 6000.0.61f1
             build-target: ios
             custom-parameters: "-buildTarget iOS"
     steps:
       - uses: actions/checkout@v4
       - name: Run Unity Edit Mode tests
+        id: unity-tests
         uses: game-ci/unity-test-runner@v4
         env:
           UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           projectPath: TestProject~
@@ -55,9 +66,55 @@ jobs:
           unityVersion: ${{ matrix.unity-version }}
           customParameters: ${{ matrix.custom-parameters }}
           artifactsPath: test-results/${{ matrix.unity-version }}-${{ matrix.build-target }}
+      - name: Assert Unity test results
+        if: always()
+        run: ./scripts/assert_unity_test_results.sh "${{ steps.unity-tests.outputs.artifactsPath }}"
       - name: Upload Unity test results
         uses: actions/upload-artifact@v4
         if: always()
         with:
           name: unity-editmode-${{ matrix.unity-version }}-${{ matrix.build-target }}
           path: test-results/${{ matrix.unity-version }}-${{ matrix.build-target }}
+
+  ios-export-build:
+    needs:
+      - swift-and-release
+      - unity-editmode
+    runs-on: macos-26
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        unity-version:
+          - 6000.0.61f1
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode 26
+        run: |
+          if [ -d /Applications/Xcode_26.app ]; then
+            sudo xcode-select -s /Applications/Xcode_26.app
+          fi
+          xcodebuild -version
+      - name: Export Unity iOS validation project
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: iOS
+          projectPath: TestProject~
+          unityVersion: ${{ matrix.unity-version }}
+          buildMethod: Baran.AppleFoundationModels.Editor.AppleFoundationModelsValidationCommands.ExportIOSValidationProject
+          customParameters: -afmExportPath ${{ github.workspace }}/build/ios-validation
+          cacheUnityInstallationOnMac: true
+      - name: Validate exported Xcode project
+        run: ./scripts/assert_exported_ios_project.sh "${GITHUB_WORKSPACE}/build/ios-validation" "${GITHUB_WORKSPACE}/build/ios-validation/xcodebuild.log"
+      - name: Upload iOS export artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-export-build-${{ matrix.unity-version }}
+          path: |
+            build/ios-validation/Unity-iPhone.xcodeproj/project.pbxproj
+            build/ios-validation/xcodebuild.log

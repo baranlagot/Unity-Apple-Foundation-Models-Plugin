@@ -41,6 +41,7 @@ namespace Baran.AppleFoundationModels.Samples
 
         public virtual void Initialize()
         {
+            UpdatePrimaryActionAvailability();
             Render();
         }
 

@@ -19,7 +19,7 @@ The package now also includes a reusable UI Toolkit diagnostic shell, presenter-
 
 ## Requirements and platform support
 
-- Unity 2022.3 or newer.
+- Unity 6 (6000.0) or newer.
 - Unity Editor: deterministic mock provider plus the validation sample and reusable diagnostic shell.
 - iOS: native bridge for iOS 26+ on eligible Apple Intelligence devices; exported-Xcode validation is automated locally.
 - macOS: managed API compiles; native provider planned for v0.2.
