@@ -4,7 +4,9 @@ All notable changes to this project are documented here.
 
 ## [Unreleased]
 
-## [0.1.0] - 2026-07-03
+Release notes for `0.1.0` are staged here until the device, compatibility, and CI
+acceptance gates pass. The dated `## [0.1.0] - <date>` heading is added only when the
+`v0.1.0` tag is published.
 
 ### Added
 
@@ -18,3 +20,9 @@ All notable changes to this project are documented here.
 
 - Sample scenes now use thin `MonoBehaviour` bindings over shared presenters instead of one-off IMGUI controllers.
 - Native bridge validation now includes a compiled Swift harness and strict-concurrency type-checking with warnings treated as failures.
+
+### Fixed
+
+- Presenter initial state disables the primary action for an empty prompt, and the streaming and device-validation presenters no longer double-dispose their cancellation source under a re-entrant cancel.
+- The device validation report no longer embeds model-generated content, and the repeated-request check verifies distinct outputs.
+- The Unity Edit Mode wrapper and Swift bridge harness can no longer report success without executing their tests.

@@ -13,7 +13,7 @@ Verified locally on 2026-07-03 at `4b8bac4` with Unity `6000.0.61f1`, Xcode `26.
 - `main` is three commits ahead of `origin/main`: native bridge hardening, reusable diagnostic/device-validation flows, and release validation automation.
 - This task file is not yet committed.
 - `package.json`, runtime release metadata, and `CHANGELOG.md` all declare `0.1.0`; no `v0.1.0` tag exists.
-- The changelog currently presents `0.1.0` as released even though the release acceptance criteria are not complete.
+- The `0.1.0` release notes are staged under the changelog's `## [Unreleased]` section until the acceptance gates pass (see Section 5 below).
 
 ### Verified passing
 
@@ -53,7 +53,13 @@ Verified locally on 2026-07-03 at `4b8bac4` with Unity `6000.0.61f1`, Xcode `26.
 - On an iOS device the report cannot currently obtain the Xcode version, and `PackageRevision` remains the constant `local-working-copy`.
 - Active native cancellation of a running generation is not covered by the harness because it requires an on-device model session; it remains device-evidence work.
 - The native harness does not yet exercise the availability status mapping, which reads `SystemLanguageModel.default.availability` directly and would require a testable seam or device state.
-- `package.json` still describes native macOS functionality even though native macOS support is planned for v0.2.
+
+### Section 5 — release metadata reconciliation (2026-07-03)
+
+- `package.json` now describes iOS-only native support with an Editor mock and explicitly defers native macOS to a future release; it no longer advertises native macOS for v0.1.
+- The `0.1.0` release notes are staged under the changelog's `## [Unreleased]` section; the dated `## [0.1.0] - <date>` heading is added only at tag time.
+- `validate_package_release.sh` now separates ordinary validation (package/metadata agreement plus a staged `Unreleased` section) from tag-time validation (tag matches package version and a dated released heading exists). Ordinary validation passes; tag-time validation for `v0.1.0` correctly fails until the notes are dated.
+- Still open for release: recording exact validated device-model/OS versions in the release documentation and creating the `v0.1.0` tag once the device, compatibility, and CI gates pass.
 
 ## Remaining implementation plan
 
