@@ -1,0 +1,16 @@
+{
+  "name": "Baran.AppleFoundationModels.Samples",
+  "rootNamespace": "Baran.AppleFoundationModels.Samples",
+  "references": [
+    "Baran.AppleFoundationModels"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}
