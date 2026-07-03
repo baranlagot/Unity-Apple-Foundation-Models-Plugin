@@ -29,7 +29,9 @@ namespace Baran.AppleFoundationModels.Editor.Tests
                 "Native~/Sources/AppleFoundationModelsCore/AppleFoundationModelsErrorMapper.swift",
                 "Plugins/iOS/AppleFoundationModelsBridge.h",
                 "Plugins/iOS/AppleFoundationModelsBridge.mm",
-                "Plugins/iOS/AppleFoundationModelsBridge.swift"
+                "Plugins/iOS/AppleFoundationModelsBridge.swift",
+                "Tests/Native/AppleFoundationModelsNativeHarness.swift",
+                "scripts/validate_swift_bridge.sh"
             };
 
             foreach (var relativePath in files)

@@ -1,6 +1,6 @@
 import Foundation
 
-private typealias AFMEventCallback = @convention(c) (
+typealias AFMEventCallback = @convention(c) (
     UnsafePointer<CChar>?
 ) -> Void
 
@@ -73,10 +73,11 @@ private final class AFMBridgeRuntime: @unchecked Sendable {
             return
         }
 
+        let emit = makeEventSink()
         Task {
             await core.getAvailability(
                 requestId: requestId,
-                emit: callbackStore.emit
+                emit: emit
             )
         }
     }
@@ -94,12 +95,13 @@ private final class AFMBridgeRuntime: @unchecked Sendable {
             return
         }
 
+        let emit = makeEventSink()
         Task {
             await core.generateText(
                 requestId: request.requestId,
                 prompt: request.prompt,
                 options: request.options,
-                emit: callbackStore.emit
+                emit: emit
             )
         }
     }
@@ -117,12 +119,13 @@ private final class AFMBridgeRuntime: @unchecked Sendable {
             return
         }
 
+        let emit = makeEventSink()
         Task {
             await core.streamText(
                 requestId: request.requestId,
                 prompt: request.prompt,
                 options: request.options,
-                emit: callbackStore.emit
+                emit: emit
             )
         }
     }
@@ -183,6 +186,13 @@ private final class AFMBridgeRuntime: @unchecked Sendable {
         }
 
         return String(cString: pointer)
+    }
+
+    private func makeEventSink() -> AppleFoundationModelsCore.EventSink {
+        let callbackStore = callbackStore
+        return { event in
+            callbackStore.emit(event)
+        }
     }
 }
 
