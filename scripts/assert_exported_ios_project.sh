@@ -42,11 +42,13 @@ fi
 
 mkdir -p "$(dirname "$LOG_PATH")"
 set -o pipefail
+# Build against the iphoneos SDK without a -destination: hosted runners often expose only a
+# simulator destination for the scheme, so "generic/platform=iOS" fails to resolve. Building
+# for the SDK alone still links the native Swift core and the weak-linked frameworks.
 xcodebuild \
   -project "$EXPORT_PATH/Unity-iPhone.xcodeproj" \
   -scheme UnityFramework \
   -sdk iphoneos \
-  -destination "generic/platform=iOS" \
   CODE_SIGNING_ALLOWED=NO \
   CODE_SIGNING_REQUIRED=NO \
   build 2>&1 | tee "$LOG_PATH"
