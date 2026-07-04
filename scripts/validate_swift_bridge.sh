@@ -13,7 +13,9 @@ swiftc -typecheck \
   "$REPO_ROOT/Native~/Sources/AppleFoundationModelsCore/AppleFoundationModelsModels.swift" \
   "$REPO_ROOT/Native~/Sources/AppleFoundationModelsCore/AppleFoundationModelsErrorMapper.swift" \
   "$REPO_ROOT/Native~/Sources/AppleFoundationModelsCore/AppleFoundationModelsCore.swift" \
-  "$REPO_ROOT/Plugins/iOS/AppleFoundationModelsBridge.swift"
+  "$REPO_ROOT/Plugins/iOS/AppleFoundationModelsBridge.swift" \
+  "$REPO_ROOT/Plugins/iOS/AppleVisionBridge.swift" \
+  "$REPO_ROOT/Plugins/iOS/AppleImagePlaygroundBridge.swift"
 
 # Build and run the native harness as a real executable. Passing the harness to the
 # `swift` interpreter treats it as a non-primary library file, silently skips its

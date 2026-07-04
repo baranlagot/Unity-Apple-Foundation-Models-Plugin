@@ -2,7 +2,15 @@
 
 The missing Unity bridge for Apple's on-device Foundation Models.
 
-Apple Foundation Models for Unity is an experimental, open-source Unity package that provides a C# API for availability checks, text generation, streaming, structured JSON, and replaceable fallback providers.
+![Apple Foundation Models for Unity — capabilities overview](Documentation~/images/capabilities.svg)
+
+Apple Foundation Models for Unity is an experimental, open-source Unity package that brings Apple's on-device intelligence to C#:
+
+- **Foundation Models** (the on-device LLM): availability checks, text generation, token streaming, and structured JSON — with instructions, temperature, and length control, plus replaceable fallback providers.
+- **Vision**: on-device image classification and text recognition (OCR) — no Apple Intelligence required, so it runs in the Simulator too.
+- **Image Playground**: on-device image generation from a prompt, returned as a Unity `Texture2D`.
+
+It builds for **iOS device, the iOS Simulator, and native macOS**, and everything runs 100% on-device.
 
 > This is an independent community project. It is not an official Apple package and it does not expose every Apple Intelligence system feature.
 
@@ -15,15 +23,23 @@ The managed core and iOS native bridge are implemented and validated locally thr
 - repeatable Unity iOS export validation;
 - `xcodebuild` compilation of the generated `UnityFramework` target with signing disabled.
 
-The package now also includes a reusable UI Toolkit diagnostic shell, presenter-based samples, and a device validation sample that produces a privacy-safe report. Eligible-device behavior still needs to be recorded on Apple Intelligence hardware for final release evidence. Native macOS support remains planned for v0.2.
+The package also includes a reusable UI Toolkit diagnostic shell, presenter-based samples, a device validation sample that produces a privacy-safe report, and a **Capability Showcase** sample — one IMGUI scene that exercises every capability (Foundation Models, Vision, and Image Playground) on device, the Simulator, or a native macOS app.
+
+Vision and Image Playground bridges and a native macOS standalone path have been added; the Foundation Models and Vision capabilities have been observed running on-device on an Apple Intelligence Mac.
 
 ## Requirements and platform support
 
 - Unity 6 (6000.0) or newer.
 - Unity Editor: deterministic mock provider plus the validation sample and reusable diagnostic shell.
 - iOS: native bridge for iOS 26+ on eligible Apple Intelligence devices; exported-Xcode validation is automated locally.
-- macOS: managed API compiles; native provider planned for v0.2.
+- macOS: native provider for macOS 26 standalone builds on an Apple Intelligence Mac (the Unity Editor keeps the deterministic mock).
 - Windows, Android, Linux, and WebGL: custom provider support; no native Apple model access.
+
+## How it works
+
+![Architecture — Unity C# to the native Swift bridge to Apple frameworks](Documentation~/images/architecture.svg)
+
+The managed C# API selects a provider (the deterministic mock in the Editor, or the native provider in a player) and talks to a thin C ABI Swift bridge over the on-device Apple frameworks. iOS builds link the bridge statically; native macOS builds inject it as a dynamic library.
 
 ## Install
 

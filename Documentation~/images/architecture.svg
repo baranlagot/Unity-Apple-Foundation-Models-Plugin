@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 470" font-family="-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="abg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#12151c"/>
+      <stop offset="1" stop-color="#0b0d13"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#5cc0ff"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="470" rx="20" fill="url(#abg)"/>
+  <text x="60" y="70" fill="#f4f7fb" font-size="34" font-weight="700">How it works</text>
+  <text x="60" y="104" fill="#8b93a3" font-size="18">Managed C# talks to a thin native Swift bridge over the on-device Apple frameworks</text>
+
+  <!-- Layer 1: C# -->
+  <g transform="translate(60,150)">
+    <rect width="250" height="250" rx="14" fill="#171b24" stroke="#2a3140"/>
+    <text x="125" y="40" fill="#5cc0ff" font-size="19" font-weight="700" text-anchor="middle">Unity C#</text>
+    <g font-size="15" fill="#d6dbe4" text-anchor="middle">
+      <rect x="24" y="62" width="202" height="40" rx="8" fill="#1a2230"/><text x="125" y="87">IAppleFoundationModelsClient</text>
+      <rect x="24" y="114" width="202" height="40" rx="8" fill="#1a2230"/><text x="125" y="139">AppleVision · ImagePlayground</text>
+      <rect x="24" y="166" width="202" height="60" rx="8" fill="#1a2230"/>
+      <text x="125" y="190">Provider</text><text x="125" y="212" font-size="13" fill="#8b93a3">Editor mock / Native</text>
+    </g>
+  </g>
+
+  <!-- Layer 2: Bridge -->
+  <g transform="translate(475,150)">
+    <rect width="250" height="250" rx="14" fill="#171b24" stroke="#2a3140"/>
+    <text x="125" y="40" fill="#a9a7ff" font-size="19" font-weight="700" text-anchor="middle">C ABI bridge (Swift)</text>
+    <g font-size="14" fill="#d6dbe4" text-anchor="middle">
+      <rect x="24" y="62" width="202" height="34" rx="8" fill="#1a2230"/><text x="125" y="84">AppleFoundationModelsBridge</text>
+      <rect x="24" y="104" width="202" height="34" rx="8" fill="#1a2230"/><text x="125" y="126">AppleVisionBridge</text>
+      <rect x="24" y="146" width="202" height="34" rx="8" fill="#1a2230"/><text x="125" y="168">AppleImagePlaygroundBridge</text>
+      <rect x="24" y="188" width="202" height="38" rx="8" fill="#141922"/>
+      <text x="125" y="212" font-size="13" fill="#8b93a3">JSON events + main-thread marshaling</text>
+    </g>
+  </g>
+
+  <!-- Layer 3: Apple frameworks -->
+  <g transform="translate(890,150)">
+    <rect width="250" height="250" rx="14" fill="#171b24" stroke="#2a3140"/>
+    <text x="125" y="40" fill="#5fd07a" font-size="19" font-weight="700" text-anchor="middle">Apple frameworks</text>
+    <g font-size="15" fill="#d6dbe4" text-anchor="middle">
+      <rect x="24" y="62" width="202" height="46" rx="8" fill="#1a2230"/><text x="125" y="90">FoundationModels</text>
+      <rect x="24" y="120" width="202" height="46" rx="8" fill="#1a2230"/><text x="125" y="148">Vision</text>
+      <rect x="24" y="178" width="202" height="46" rx="8" fill="#1a2230"/><text x="125" y="206">ImagePlayground</text>
+    </g>
+  </g>
+
+  <!-- arrows -->
+  <line x1="315" y1="275" x2="470" y2="275" stroke="#5cc0ff" stroke-width="2.5" marker-end="url(#arrow)"/>
+  <line x1="730" y1="275" x2="885" y2="275" stroke="#5cc0ff" stroke-width="2.5" marker-end="url(#arrow)"/>
+
+  <text x="600" y="440" fill="#8b93a3" font-size="16" text-anchor="middle">iOS builds link the bridge statically (__Internal); macOS injects it as a dylib. The Editor uses a deterministic mock.</text>
+</svg>

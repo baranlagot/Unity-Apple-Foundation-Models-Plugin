@@ -38,6 +38,8 @@ namespace Baran.AppleFoundationModels.Editor
         internal const string MinimumIOSVersion = "26.0";
         internal const string SwiftVersion = "5.0";
         internal const string FrameworkName = "FoundationModels.framework";
+        internal const string VisionFrameworkName = "Vision.framework";
+        internal const string ImagePlaygroundFrameworkName = "ImagePlayground.framework";
         internal const string NativeProjectRoot =
             "Libraries/com.baran.apple-foundation-models/Native/AppleFoundationModelsCore";
 
@@ -102,6 +104,18 @@ namespace Baran.AppleFoundationModels.Editor
             project.AddFramework(
                 project.UnityFrameworkTargetGuid,
                 FrameworkName,
+                weak: true);
+            // Vision (image classification and OCR) ships in every supported iOS SDK, so it
+            // is linked normally rather than weakly.
+            project.AddFramework(
+                project.UnityFrameworkTargetGuid,
+                VisionFrameworkName,
+                weak: false);
+            // Image Playground is Apple Intelligence-gated, so weak-link it like Foundation
+            // Models to keep the app loadable where the framework is unavailable.
+            project.AddFramework(
+                project.UnityFrameworkTargetGuid,
+                ImagePlaygroundFrameworkName,
                 weak: true);
             project.SetBuildProperty(
                 project.UnityFrameworkTargetGuid,

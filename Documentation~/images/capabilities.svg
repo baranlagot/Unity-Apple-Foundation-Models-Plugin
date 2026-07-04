@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560" font-family="-apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#12151c"/>
+      <stop offset="1" stop-color="#0b0d13"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5cc0ff"/>
+      <stop offset="1" stop-color="#7d7bff"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="560" rx="20" fill="url(#bg)"/>
+
+  <text x="60" y="82" fill="#f4f7fb" font-size="40" font-weight="700">Apple Foundation Models for Unity</text>
+  <text x="60" y="120" fill="#8b93a3" font-size="20">On-device Apple Intelligence — text, vision, and image generation — from C#</text>
+
+  <!-- Foundation Models card -->
+  <g transform="translate(60,170)">
+    <rect width="345" height="250" rx="16" fill="#171b24" stroke="#2a3140"/>
+    <circle cx="42" cy="52" r="22" fill="#1f6feb22" stroke="#5cc0ff"/>
+    <text x="42" y="60" fill="#5cc0ff" font-size="26" font-weight="700" text-anchor="middle">FM</text>
+    <text x="84" y="48" fill="#f4f7fb" font-size="24" font-weight="700">Foundation Models</text>
+    <text x="84" y="76" fill="#7f8899" font-size="16">On-device LLM</text>
+    <g fill="#d6dbe4" font-size="18">
+      <text x="30" y="128">• Text generation</text>
+      <text x="30" y="160">• Token streaming + cancel</text>
+      <text x="30" y="192">• Structured JSON output</text>
+      <text x="30" y="224">• Instructions · temperature · length</text>
+    </g>
+  </g>
+
+  <!-- Vision card -->
+  <g transform="translate(428,170)">
+    <rect width="345" height="250" rx="16" fill="#171b24" stroke="#2a3140"/>
+    <circle cx="42" cy="52" r="22" fill="#2ea04322" stroke="#5fd07a"/>
+    <text x="42" y="60" fill="#5fd07a" font-size="24" font-weight="700" text-anchor="middle">V</text>
+    <text x="84" y="48" fill="#f4f7fb" font-size="24" font-weight="700">Vision</text>
+    <text x="84" y="76" fill="#7f8899" font-size="16">No Apple Intelligence needed</text>
+    <g fill="#d6dbe4" font-size="18">
+      <text x="30" y="128">• Image classification</text>
+      <text x="30" y="160">• Text recognition (OCR)</text>
+      <text x="30" y="192">• Runs in the Simulator too</text>
+    </g>
+  </g>
+
+  <!-- Image Playground card -->
+  <g transform="translate(796,170)">
+    <rect width="345" height="250" rx="16" fill="#171b24" stroke="#2a3140"/>
+    <circle cx="42" cy="52" r="22" fill="#7d7bff22" stroke="#a9a7ff"/>
+    <text x="42" y="60" fill="#a9a7ff" font-size="24" font-weight="700" text-anchor="middle">IP</text>
+    <text x="84" y="48" fill="#f4f7fb" font-size="24" font-weight="700">Image Playground</text>
+    <text x="84" y="76" fill="#7f8899" font-size="16">On-device image generation</text>
+    <g fill="#d6dbe4" font-size="18">
+      <text x="30" y="128">• Prompt → generated image</text>
+      <text x="30" y="160">• Returned as a Unity Texture2D</text>
+      <text x="30" y="192">• Displayed inline in the sample</text>
+    </g>
+  </g>
+
+  <!-- Platform / privacy footer -->
+  <g transform="translate(60,470)">
+    <rect width="1081" height="54" rx="12" fill="#10141b" stroke="#242b38"/>
+    <text x="24" y="34" fill="#8b93a3" font-size="17">Targets</text>
+    <g font-size="16" font-weight="600">
+      <rect x="92" y="15" width="120" height="26" rx="13" fill="#1a2230"/><text x="152" y="33" fill="#9fd0ff" text-anchor="middle">iOS device</text>
+      <rect x="224" y="15" width="140" height="26" rx="13" fill="#1a2230"/><text x="294" y="33" fill="#9fd0ff" text-anchor="middle">iOS Simulator</text>
+      <rect x="376" y="15" width="120" height="26" rx="13" fill="#1a2230"/><text x="436" y="33" fill="#9fd0ff" text-anchor="middle">native macOS</text>
+    </g>
+    <text x="1057" y="34" fill="#5fd07a" font-size="16" font-weight="600" text-anchor="end">100% on-device · private</text>
+  </g>
+</svg>
