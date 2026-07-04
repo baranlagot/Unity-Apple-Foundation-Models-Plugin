@@ -30,6 +30,12 @@ EXPORT_PATH=${3:-"$REPO_ROOT/Builds~/ios-showcase-$SDK_MODE"}
 PROJECT_PATH="$REPO_ROOT/TestProject~"
 export AFM_IOS_SDK="$SDK_MODE"
 
+# Bring the packaged Capability Showcase sample into the test project so it compiles.
+SAMPLE_DEST="$PROJECT_PATH/Assets/Samples/CapabilityShowcase"
+rm -rf "$SAMPLE_DEST"
+mkdir -p "$SAMPLE_DEST"
+cp "$REPO_ROOT/Samples~/CapabilityShowcase/CapabilityShowcaseExample.cs" "$SAMPLE_DEST/"
+
 # -buildTarget iOS makes iOS the active target at startup so the Editor assembly compiles
 # with UNITY_IOS defined. The native postprocessor that copies the Swift core and
 # weak-links FoundationModels lives under #if UNITY_IOS, so without this it is excluded and

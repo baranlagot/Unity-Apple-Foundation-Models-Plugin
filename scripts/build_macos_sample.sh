@@ -19,6 +19,12 @@ REPO_ROOT=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
 EXPORT_PATH=${2:-"$REPO_ROOT/Builds~/mac-showcase/AFMShowcase.app"}
 PROJECT_PATH="$REPO_ROOT/TestProject~"
 
+# Bring the packaged Capability Showcase sample into the test project so it compiles.
+SAMPLE_DEST="$PROJECT_PATH/Assets/Samples/CapabilityShowcase"
+rm -rf "$SAMPLE_DEST"
+mkdir -p "$SAMPLE_DEST"
+cp "$REPO_ROOT/Samples~/CapabilityShowcase/CapabilityShowcaseExample.cs" "$SAMPLE_DEST/"
+
 # 1. Build the macOS .app. StandaloneOSX players select the native provider.
 "$UNITY_EDITOR_PATH" \
   -batchmode \

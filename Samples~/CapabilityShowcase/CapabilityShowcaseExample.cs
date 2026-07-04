@@ -86,6 +86,15 @@ namespace Baran.AppleFoundationModels.Samples
             _client = AppleFoundationModels.DefaultClient;
             Application.targetFrameRate = 60;
 
+            // Provide a camera so an otherwise-empty sample scene renders a clean frame.
+            if (Camera.main == null)
+            {
+                var cameraObject = new GameObject("Showcase Camera") { tag = "MainCamera" };
+                var showcaseCamera = cameraObject.AddComponent<Camera>();
+                showcaseCamera.clearFlags = CameraClearFlags.SolidColor;
+                showcaseCamera.backgroundColor = new Color(0.08f, 0.09f, 0.12f);
+            }
+
             _background = new Texture2D(1, 1);
             _background.SetPixel(0, 0, new Color(0.08f, 0.09f, 0.12f, 1f));
             _background.Apply();

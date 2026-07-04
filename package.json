@@ -17,7 +17,9 @@
   "license": "MIT",
   "dependencies": {
     "com.unity.modules.jsonserialize": "1.0.0",
-    "com.unity.modules.uielements": "1.0.0"
+    "com.unity.modules.uielements": "1.0.0",
+    "com.unity.modules.imageconversion": "1.0.0",
+    "com.unity.modules.screencapture": "1.0.0"
   },
   "samples": [
     {
@@ -44,6 +46,11 @@
       "displayName": "Device Validation",
       "description": "Run repeatable local or device validation checks and copy a privacy-safe report.",
       "path": "Samples~/DeviceValidation"
+    },
+    {
+      "displayName": "Capability Showcase",
+      "description": "One self-contained scene demonstrating every capability (Foundation Models, Vision, Image Playground) on device, Simulator, or native macOS.",
+      "path": "Samples~/CapabilityShowcase"
     }
   ]
 }

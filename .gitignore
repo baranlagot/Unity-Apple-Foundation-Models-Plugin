@@ -25,3 +25,7 @@ DerivedData/
 *.xcodeproj/xcuserdata/
 *.mobileprovision
 *.p12
+
+# Capability Showcase sample is copied into the test project at build time from Samples~
+TestProject~/Assets/Samples/
+TestProject~/Assets/Samples.meta
