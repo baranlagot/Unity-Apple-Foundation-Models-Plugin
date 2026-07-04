@@ -134,12 +134,6 @@ namespace Baran.AppleFoundationModels.Samples
             DrawPill("Availability: " + _availabilityText, _availabilityTone);
             GUILayout.Space(8);
 
-            // Output panel — always visible, shows the current result / live stream.
-            GUILayout.Label("Output", _section);
-            DrawPill(_status, _statusTone);
-            DrawOutputPanel();
-            GUILayout.Space(12);
-
             // Prompt + presets.
             GUILayout.Label("Prompt", _section);
             _prompt = GUILayout.TextArea(_prompt, _field, GUILayout.MinHeight(58));
@@ -153,28 +147,6 @@ namespace Baran.AppleFoundationModels.Samples
             }
             GUILayout.EndHorizontal();
             GUILayout.Space(12);
-
-            // Options: instructions, temperature, length.
-            GUILayout.Label("Options", _section);
-            GUILayout.Label("System instructions (steer the model's behaviour)", _hint);
-            _instructions = GUILayout.TextArea(_instructions, _field, GUILayout.MinHeight(44));
-            GUILayout.Label(
-                "Temperature: " + _temperature.ToString("0.00") + "  (0 = focused, 1 = creative)",
-                _hint);
-            _temperature = GUILayout.HorizontalSlider(_temperature, 0f, 1f);
-            GUILayout.Label("Max length", _hint);
-            GUILayout.BeginHorizontal();
-            foreach (var length in LengthPresets)
-            {
-                var selected = _maxTokens == length.Value;
-                var label = (selected ? "● " : "") + length.Label;
-                if (GUILayout.Button(label, _smallButton))
-                {
-                    _maxTokens = length.Value;
-                }
-            }
-            GUILayout.EndHorizontal();
-            GUILayout.Space(14);
 
             // Capabilities.
             GUILayout.Label("Capabilities", _section);
@@ -239,6 +211,34 @@ namespace Baran.AppleFoundationModels.Samples
                 var rect = GUILayoutUtility.GetRect(220f, 220f);
                 GUI.DrawTexture(rect, _generatedImage, ScaleMode.ScaleToFit);
             }
+            GUILayout.Space(14);
+
+            // Output — the result of the most recent action lands here.
+            GUILayout.Label("Output (results appear here)", _section);
+            DrawPill(_status, _statusTone);
+            DrawOutputPanel();
+            GUILayout.Space(14);
+
+            // Options: instructions, temperature, length.
+            GUILayout.Label("Options", _section);
+            GUILayout.Label("System instructions (steer the model's behaviour)", _hint);
+            _instructions = GUILayout.TextArea(_instructions, _field, GUILayout.MinHeight(44));
+            GUILayout.Label(
+                "Temperature: " + _temperature.ToString("0.00") + "  (0 = focused, 1 = creative)",
+                _hint);
+            _temperature = GUILayout.HorizontalSlider(_temperature, 0f, 1f);
+            GUILayout.Label("Max length", _hint);
+            GUILayout.BeginHorizontal();
+            foreach (var length in LengthPresets)
+            {
+                var selected = _maxTokens == length.Value;
+                var label = (selected ? "● " : "") + length.Label;
+                if (GUILayout.Button(label, _smallButton))
+                {
+                    _maxTokens = length.Value;
+                }
+            }
+            GUILayout.EndHorizontal();
             GUILayout.Space(14);
 
             // Event log.
