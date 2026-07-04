@@ -53,7 +53,7 @@ namespace Baran.AppleFoundationModels.Vision
 
         /// <summary>True on platforms where the native Vision transport is available.</summary>
         public static bool IsSupported =>
-#if UNITY_IOS && !UNITY_EDITOR
+#if (UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
             true;
 #else
             false;
@@ -89,7 +89,7 @@ namespace Baran.AppleFoundationModels.Vision
                 ? "recognizeText"
                 : "classify";
 
-#if UNITY_IOS && !UNITY_EDITOR
+#if (UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
             AFMVision_Analyze(requestId, kindToken, imageBytes, imageBytes.Length);
 #endif
             return tcs.Task;
@@ -104,7 +104,7 @@ namespace Baran.AppleFoundationModels.Vision
 
             _initialized = true;
             _context = SynchronizationContext.Current;
-#if UNITY_IOS && !UNITY_EDITOR
+#if (UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
             AFMVision_SetCallback(Callback);
 #endif
         }
@@ -195,11 +195,17 @@ namespace Baran.AppleFoundationModels.Vision
             public string errorMessage;
         }
 
-#if UNITY_IOS && !UNITY_EDITOR
-        [DllImport("__Internal", CallingConvention = CallingConvention.Cdecl)]
+#if (UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
+#if UNITY_IOS
+        private const string NativeLibrary = "__Internal";
+#else
+        private const string NativeLibrary = "AppleFoundationModelsMac";
+#endif
+
+        [DllImport(NativeLibrary, CallingConvention = CallingConvention.Cdecl)]
         private static extern void AFMVision_SetCallback(VisionCallback callback);
 
-        [DllImport("__Internal", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NativeLibrary, CallingConvention = CallingConvention.Cdecl)]
         private static extern void AFMVision_Analyze(
             string requestId,
             string kind,

@@ -28,7 +28,7 @@ namespace Baran.AppleFoundationModels.ImagePlayground
 
         /// <summary>True on platforms where the native Image Playground transport exists.</summary>
         public static bool IsSupported =>
-#if UNITY_IOS && !UNITY_EDITOR
+#if (UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
             true;
 #else
             false;
@@ -63,7 +63,7 @@ namespace Baran.AppleFoundationModels.ImagePlayground
                 Pending[requestId] = tcs;
             }
 
-#if UNITY_IOS && !UNITY_EDITOR
+#if (UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
             AFMImage_Generate(requestId, prompt);
 #endif
             return tcs.Task;
@@ -78,7 +78,7 @@ namespace Baran.AppleFoundationModels.ImagePlayground
 
             _initialized = true;
             _context = SynchronizationContext.Current;
-#if UNITY_IOS && !UNITY_EDITOR
+#if (UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
             AFMImage_SetCallback(Callback);
 #endif
         }
@@ -173,11 +173,17 @@ namespace Baran.AppleFoundationModels.ImagePlayground
             public string errorMessage;
         }
 
-#if UNITY_IOS && !UNITY_EDITOR
-        [DllImport("__Internal", CallingConvention = CallingConvention.Cdecl)]
+#if (UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
+#if UNITY_IOS
+        private const string NativeLibrary = "__Internal";
+#else
+        private const string NativeLibrary = "AppleFoundationModelsMac";
+#endif
+
+        [DllImport(NativeLibrary, CallingConvention = CallingConvention.Cdecl)]
         private static extern void AFMImage_SetCallback(ImageCallback callback);
 
-        [DllImport("__Internal", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NativeLibrary, CallingConvention = CallingConvention.Cdecl)]
         private static extern void AFMImage_Generate(string requestId, string prompt);
 #endif
     }

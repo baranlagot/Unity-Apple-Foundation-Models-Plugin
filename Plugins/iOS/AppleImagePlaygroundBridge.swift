@@ -12,7 +12,7 @@ import ImagePlayground
 // The generated image is returned to Unity as a base64-encoded PNG inside a JSON string,
 // mirroring the other native bridges' event contract.
 
-typealias AFMImageCallback = @convention(c) (UnsafePointer<CChar>?) -> Void
+public typealias AFMImageCallback = @convention(c) (UnsafePointer<CChar>?) -> Void
 
 private final class AFMImageRuntime: @unchecked Sendable {
     static let shared = AFMImageRuntime()
@@ -141,12 +141,12 @@ private final class AFMImageRuntime: @unchecked Sendable {
 }
 
 @_cdecl("AFMImage_SetCallback")
-func AFMImage_SetCallback(_ callback: AFMImageCallback?) {
+public func AFMImage_SetCallback(_ callback: AFMImageCallback?) {
     AFMImageRuntime.shared.setCallback(callback)
 }
 
 @_cdecl("AFMImage_Generate")
-func AFMImage_Generate(
+public func AFMImage_Generate(
     _ requestId: UnsafePointer<CChar>?,
     _ prompt: UnsafePointer<CChar>?
 ) {

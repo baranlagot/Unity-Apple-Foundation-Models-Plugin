@@ -28,7 +28,6 @@ namespace Baran.AppleFoundationModels.Editor
         public static void ExportIOSCapabilityShowcaseApp()
         {
             var outputPath = ResolveExportPath();
-            var showcaseType = ResolveShowcaseType();
 
             // Set AFM_IOS_SDK=simulator to target the iOS Simulator (which uses the host
             // Mac's Apple Intelligence); anything else builds for a physical device.
@@ -50,6 +49,38 @@ namespace Baran.AppleFoundationModels.Editor
             PlayerSettings.iOS.targetDevice = iOSTargetDevice.iPhoneAndiPad;
             PlayerSettings.productName = "AFM Showcase";
 
+            BuildShowcase(BuildTarget.iOS, BuildTargetGroup.iOS, outputPath, "iOS");
+        }
+
+        /// <summary>
+        /// Builds the capability-showcase sample into a native macOS .app. On a macOS
+        /// standalone build the native provider is active, so a Mac with Apple Intelligence
+        /// runs the real on-device model. The build script drops the native dylib into the
+        /// app bundle after this export.
+        /// </summary>
+        public static void ExportMacShowcaseApp()
+        {
+            var outputPath = ResolveExportPath();
+
+            PlayerSettings.SetApplicationIdentifier(
+                BuildTargetGroup.Standalone,
+                ShowcaseBundleId);
+            PlayerSettings.productName = "AFM Showcase";
+
+            BuildShowcase(
+                BuildTarget.StandaloneOSX,
+                BuildTargetGroup.Standalone,
+                outputPath,
+                "macOS");
+        }
+
+        private static void BuildShowcase(
+            BuildTarget target,
+            BuildTargetGroup group,
+            string outputPath,
+            string label)
+        {
+            var showcaseType = ResolveShowcaseType();
             var originalScenes = EditorBuildSettings.scenes;
             try
             {
@@ -79,14 +110,14 @@ namespace Baran.AppleFoundationModels.Editor
                     new BuildPlayerOptions
                     {
                         scenes = new[] { ShowcaseScenePath },
-                        target = BuildTarget.iOS,
-                        targetGroup = BuildTargetGroup.iOS,
+                        target = target,
+                        targetGroup = group,
                         locationPathName = outputPath
                     });
                 if (report.summary.result != BuildResult.Succeeded)
                 {
                     throw new BuildFailedException(
-                        "iOS capability-showcase build failed with result " +
+                        label + " capability-showcase build failed with result " +
                         report.summary.result + ".");
                 }
             }
@@ -100,8 +131,8 @@ namespace Baran.AppleFoundationModels.Editor
             }
 
             Debug.Log(
-                "Apple Foundation Models exported the capability-showcase iOS app to " +
-                outputPath + ".");
+                "Apple Foundation Models exported the capability-showcase " + label +
+                " app to " + outputPath + ".");
         }
 
         private static Type ResolveShowcaseType()

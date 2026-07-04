@@ -7,7 +7,7 @@ import Vision
 // supported device and the Simulator. Results are returned to Unity as a JSON string via a
 // registered C callback, mirroring the Foundation Models event contract.
 
-typealias AFMVisionCallback = @convention(c) (UnsafePointer<CChar>?) -> Void
+public typealias AFMVisionCallback = @convention(c) (UnsafePointer<CChar>?) -> Void
 
 private final class AFMVisionRuntime: @unchecked Sendable {
     static let shared = AFMVisionRuntime()
@@ -108,12 +108,12 @@ private final class AFMVisionRuntime: @unchecked Sendable {
 }
 
 @_cdecl("AFMVision_SetCallback")
-func AFMVision_SetCallback(_ callback: AFMVisionCallback?) {
+public func AFMVision_SetCallback(_ callback: AFMVisionCallback?) {
     AFMVisionRuntime.shared.setCallback(callback)
 }
 
 @_cdecl("AFMVision_Analyze")
-func AFMVision_Analyze(
+public func AFMVision_Analyze(
     _ requestId: UnsafePointer<CChar>?,
     _ kind: UnsafePointer<CChar>?,
     _ bytes: UnsafePointer<UInt8>?,

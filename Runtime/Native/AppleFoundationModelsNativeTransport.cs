@@ -16,7 +16,7 @@ namespace Baran.AppleFoundationModels.Native
         public void Initialize(Action<string> eventHandler, bool debugLoggingEnabled)
         {
             _eventHandler = eventHandler ?? throw new ArgumentNullException(nameof(eventHandler));
-#if UNITY_IOS && !UNITY_EDITOR
+#if (UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
             AFM_SetEventCallback(Callback);
             AFM_SetDebugLogging(debugLoggingEnabled);
 #endif
@@ -24,7 +24,7 @@ namespace Baran.AppleFoundationModels.Native
 
         public void GetAvailability(string requestId)
         {
-#if UNITY_IOS && !UNITY_EDITOR
+#if (UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
             AFM_GetAvailability(requestId);
 #else
             throw CreateUnsupportedException();
@@ -33,7 +33,7 @@ namespace Baran.AppleFoundationModels.Native
 
         public void GenerateText(string requestId, string prompt, string optionsJson)
         {
-#if UNITY_IOS && !UNITY_EDITOR
+#if (UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
             AFM_GenerateText(requestId, prompt, optionsJson);
 #else
             throw CreateUnsupportedException();
@@ -42,7 +42,7 @@ namespace Baran.AppleFoundationModels.Native
 
         public void StreamText(string requestId, string prompt, string optionsJson)
         {
-#if UNITY_IOS && !UNITY_EDITOR
+#if (UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
             AFM_StreamText(requestId, prompt, optionsJson);
 #else
             throw CreateUnsupportedException();
@@ -51,7 +51,7 @@ namespace Baran.AppleFoundationModels.Native
 
         public void CancelRequest(string requestId)
         {
-#if UNITY_IOS && !UNITY_EDITOR
+#if (UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
             AFM_CancelRequest(requestId);
 #endif
         }
@@ -86,29 +86,35 @@ namespace Baran.AppleFoundationModels.Native
                 "The native Apple Foundation Models transport is only available in an iOS player.");
         }
 
-#if UNITY_IOS && !UNITY_EDITOR
-        [DllImport("__Internal", CallingConvention = CallingConvention.Cdecl)]
+#if (UNITY_IOS || UNITY_STANDALONE_OSX) && !UNITY_EDITOR
+#if UNITY_IOS
+        private const string NativeLibrary = "__Internal";
+#else
+        private const string NativeLibrary = "AppleFoundationModelsMac";
+#endif
+
+        [DllImport(NativeLibrary, CallingConvention = CallingConvention.Cdecl)]
         private static extern void AFM_SetEventCallback(NativeEventCallback callback);
 
-        [DllImport("__Internal", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NativeLibrary, CallingConvention = CallingConvention.Cdecl)]
         private static extern void AFM_SetDebugLogging([MarshalAs(UnmanagedType.I1)] bool enabled);
 
-        [DllImport("__Internal", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NativeLibrary, CallingConvention = CallingConvention.Cdecl)]
         private static extern void AFM_GetAvailability(string requestId);
 
-        [DllImport("__Internal", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NativeLibrary, CallingConvention = CallingConvention.Cdecl)]
         private static extern void AFM_GenerateText(
             string requestId,
             string prompt,
             string optionsJson);
 
-        [DllImport("__Internal", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NativeLibrary, CallingConvention = CallingConvention.Cdecl)]
         private static extern void AFM_StreamText(
             string requestId,
             string prompt,
             string optionsJson);
 
-        [DllImport("__Internal", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(NativeLibrary, CallingConvention = CallingConvention.Cdecl)]
         private static extern void AFM_CancelRequest(string requestId);
 #endif
     }

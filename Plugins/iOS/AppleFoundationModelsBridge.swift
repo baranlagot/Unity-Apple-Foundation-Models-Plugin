@@ -1,6 +1,6 @@
 import Foundation
 
-typealias AFMEventCallback = @convention(c) (
+public typealias AFMEventCallback = @convention(c) (
     UnsafePointer<CChar>?
 ) -> Void
 
@@ -197,22 +197,22 @@ private final class AFMBridgeRuntime: @unchecked Sendable {
 }
 
 @_cdecl("AFM_SetEventCallback")
-func AFM_SetEventCallback(_ callback: AFMEventCallback?) {
+public func AFM_SetEventCallback(_ callback: AFMEventCallback?) {
     AFMBridgeRuntime.shared.setCallback(callback)
 }
 
 @_cdecl("AFM_SetDebugLogging")
-func AFM_SetDebugLogging(_ enabled: UInt8) {
+public func AFM_SetDebugLogging(_ enabled: UInt8) {
     AFMBridgeRuntime.shared.setDebugLogging(enabled: enabled != 0)
 }
 
 @_cdecl("AFM_GetAvailability")
-func AFM_GetAvailability(_ requestId: UnsafePointer<CChar>?) {
+public func AFM_GetAvailability(_ requestId: UnsafePointer<CChar>?) {
     AFMBridgeRuntime.shared.getAvailability(requestIdPointer: requestId)
 }
 
 @_cdecl("AFM_GenerateText")
-func AFM_GenerateText(
+public func AFM_GenerateText(
     _ requestId: UnsafePointer<CChar>?,
     _ prompt: UnsafePointer<CChar>?,
     _ optionsJson: UnsafePointer<CChar>?
@@ -225,7 +225,7 @@ func AFM_GenerateText(
 }
 
 @_cdecl("AFM_StreamText")
-func AFM_StreamText(
+public func AFM_StreamText(
     _ requestId: UnsafePointer<CChar>?,
     _ prompt: UnsafePointer<CChar>?,
     _ optionsJson: UnsafePointer<CChar>?
@@ -238,6 +238,6 @@ func AFM_StreamText(
 }
 
 @_cdecl("AFM_CancelRequest")
-func AFM_CancelRequest(_ requestId: UnsafePointer<CChar>?) {
+public func AFM_CancelRequest(_ requestId: UnsafePointer<CChar>?) {
     AFMBridgeRuntime.shared.cancel(requestIdPointer: requestId)
 }
